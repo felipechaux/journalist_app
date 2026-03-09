@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:journalist_app/features/daily_news/presentation/bloc/article/remote/remote_article_bloc.dart';
 import 'package:journalist_app/features/daily_news/presentation/bloc/article/remote/remote_article_state.dart';
 
@@ -12,69 +13,147 @@ class DailyNews extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildPage();
-  }
-
-  _buildAppbar(BuildContext context) {
-    return AppBar(
-      title: const Text('Daily News', style: TextStyle(color: Colors.black)),
-      actions: [
-        GestureDetector(
-          onTap: () => _onShowSavedArticlesViewTapped(context),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14),
-            child: Icon(Icons.bookmark, color: Colors.black),
-          ),
-        ),
-      ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: _buildAppbar(context),
+      body: _buildPage(),
+      floatingActionButton: _buildFloatingActionButton(context),
     );
   }
 
-  _buildPage() {
+  PreferredSizeWidget _buildAppbar(BuildContext context) {
+    return AppBar(
+      title: const Text(
+        'Daily News',
+        style: TextStyle(
+          color: Colors.black87,
+          fontWeight: FontWeight.w700,
+          fontSize: 22,
+          letterSpacing: -0.5,
+        ),
+      ),
+      centerTitle: false,
+      elevation: 0,
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      actions: [
+        IconButton(
+          onPressed: () => _onShowSavedArticlesViewTapped(context),
+          icon: const Icon(
+            Ionicons.bookmark_outline,
+            color: Colors.black87,
+            size: 26,
+          ),
+          splashRadius: 24,
+        ),
+        const SizedBox(width: 8),
+      ],
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Container(color: Colors.grey.shade100, height: 1),
+      ),
+    );
+  }
+
+  Widget _buildPage() {
     return BlocBuilder<RemoteArticlesBloc, RemoteArticlesState>(
       builder: (context, state) {
         if (state is RemoteArticlesLoading) {
-          return Scaffold(
-            appBar: _buildAppbar(context),
-            body: const Center(child: CupertinoActivityIndicator()),
-          );
+          return const Center(child: CupertinoActivityIndicator(radius: 16));
         }
         if (state is RemoteArticlesError) {
-          return Scaffold(
-            appBar: _buildAppbar(context),
-            body: const Center(child: Icon(Icons.refresh)),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Ionicons.refresh_circle_outline,
+                  color: Colors.grey.shade400,
+                  size: 64,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Failed to load news',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
           );
         }
         if (state is RemoteArticlesDone) {
-          return _buildArticlesPage(context, state.articles!);
+          if (state.articles == null || state.articles!.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Ionicons.newspaper_outline,
+                    color: Colors.grey.shade400,
+                    size: 64,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No articles yet',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return _buildArticlesList(context, state.articles!);
         }
         return const SizedBox();
       },
     );
   }
 
-  Widget _buildArticlesPage(
+  Widget _buildArticlesList(
     BuildContext context,
     List<ArticleEntity> articles,
   ) {
-    List<Widget> articleWidgets = [];
-    for (var article in articles) {
-      articleWidgets.add(
-        ArticleWidget(
-          article: article,
-          onArticlePressed: (article) => _onArticlePressed(context, article),
-        ),
-      );
-    }
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ).copyWith(bottom: 100), // Space for FAB
+      itemCount: articles.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: ArticleWidget(
+            article: articles[index],
+            onArticlePressed: (article) => _onArticlePressed(context, article),
+          ),
+        );
+      },
+    );
+  }
 
-    return Scaffold(
-      appBar: _buildAppbar(context),
-      body: ListView(children: articleWidgets),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/PublishArticle');
-        },
-        child: const Icon(Icons.add),
+  Widget _buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () {
+        Navigator.pushNamed(context, '/PublishArticle');
+      },
+      backgroundColor: Colors.black87,
+      elevation: 4,
+      icon: const Icon(Ionicons.create_outline, color: Colors.white, size: 20),
+      label: const Text(
+        'Write',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
