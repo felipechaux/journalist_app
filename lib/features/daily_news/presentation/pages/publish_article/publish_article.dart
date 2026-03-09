@@ -41,24 +41,37 @@ class _PublishArticleContent extends HookWidget {
       }
     }
 
+    void removeImage() {
+      imagePath.value = null;
+    }
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: _buildAppBar(context),
       body: BlocConsumer<PublishArticleBloc, PublishArticleState>(
         listener: (context, state) {
           if (state is PublishArticleSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Article published successfully!')),
+              const SnackBar(
+                content: Text('Article published successfully!'),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.green,
+              ),
             );
             Navigator.pop(context);
           } else if (state is PublishArticleFailure) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error: ${state.error}'),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.redAccent,
+              ),
+            );
           }
         },
         builder: (context, state) {
           if (state is PublishArticleLoading) {
-            return const Center(child: CupertinoActivityIndicator());
+            return const Center(child: CupertinoActivityIndicator(radius: 16));
           }
           return _buildBody(
             context,
@@ -66,10 +79,11 @@ class _PublishArticleContent extends HookWidget {
             contentController,
             imagePath.value,
             pickImage,
+            removeImage,
           );
         },
       ),
-      bottomNavigationBar: _buildPublishButton(
+      floatingActionButton: _buildPublishButton(
         context,
         titleController,
         contentController,
@@ -80,12 +94,31 @@ class _PublishArticleContent extends HookWidget {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
+      title: const Text(
+        'Draft',
+        style: TextStyle(
+          color: Colors.black87,
+          fontWeight: FontWeight.w600,
+          fontSize: 18,
+          letterSpacing: 0.5,
+        ),
+      ),
+      centerTitle: true,
       leading: IconButton(
-        icon: const Icon(Ionicons.chevron_back, color: Colors.black),
+        icon: const Icon(
+          Ionicons.close_outline,
+          color: Colors.black87,
+          size: 28,
+        ),
         onPressed: () => Navigator.pop(context),
       ),
       elevation: 0,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Container(color: Colors.grey.shade100, height: 1),
+      ),
     );
   }
 
@@ -95,83 +128,132 @@ class _PublishArticleContent extends HookWidget {
     TextEditingController contentController,
     String? currentImagePath,
     Future<void> Function() onPickImage,
+    VoidCallback onRemoveImage,
   ) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+      physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
-            controller: titleController,
-            decoration: InputDecoration(
-              hintText: 'Write your title here...',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.grey),
-              ),
-            ),
-            maxLines: 2,
-            minLines: 1,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 16),
-          Center(
-            child: ElevatedButton.icon(
-              onPressed: onPickImage,
-              icon: const Icon(
-                Ionicons.camera_outline,
-                size: 18,
-                color: Colors.black,
-              ),
-              label: const Text(
-                'Attach Image',
-                style: TextStyle(color: Colors.black),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(
-                  0xFFDCC8E4,
-                ), // Similar to the purple button in the design
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+          if (currentImagePath != null)
+            Stack(
+              children: [
+                Image.file(
+                  File(currentImagePath),
+                  height: 250,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.black54,
+                    child: IconButton(
+                      icon: const Icon(
+                        Ionicons.trash_outline,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      onPressed: onRemoveImage,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ),
-          if (currentImagePath != null) ...[
-            const SizedBox(height: 16),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.file(
-                File(currentImagePath),
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (currentImagePath == null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: InkWell(
+                      onTap: onPickImage,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        height: 120,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.grey.shade200,
+                            width: 2,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Ionicons.image_outline,
+                              size: 36,
+                              color: Colors.grey.shade400,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Add Cover Image (Optional)',
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(
+                    hintText: 'Article Title',
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    hintStyle: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                  ),
+                  maxLines: null,
+                  textInputAction: TextInputAction.next,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Divider(color: Colors.grey.shade200, thickness: 1),
+                ),
+                TextField(
+                  controller: contentController,
+                  decoration: InputDecoration(
+                    hintText: 'Write your story here...',
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    hintStyle: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey.shade400,
+                      height: 1.6,
+                    ),
+                  ),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black87,
+                    height: 1.6,
+                  ),
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                ),
+                const SizedBox(height: 80), // Space for floating action button
+              ],
             ),
-          ],
-          const SizedBox(height: 20),
-          TextField(
-            controller: contentController,
-            decoration: InputDecoration(
-              hintText: 'Add article here, ....',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(
-                  color: Colors.transparent,
-                ), // Removing border as in right edge case
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: Colors.grey.shade300),
-              ),
-            ),
-            maxLines: 15,
-            minLines: 10,
           ),
         ],
       ),
@@ -184,42 +266,42 @@ class _PublishArticleContent extends HookWidget {
     TextEditingController contentController,
     String? imagePath,
   ) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      color: const Color(0xFFDCC8E4),
-      child: TextButton(
-        onPressed: () {
-          if (titleController.text.trim().isEmpty ||
-              contentController.text.trim().isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Title and content are required')),
-            );
-            return;
-          }
-
-          context.read<PublishArticleBloc>().add(
-            PublishArticleSubmitted(
-              title: titleController.text.trim(),
-              content: contentController.text.trim(),
-              imagePath: imagePath,
+    return FloatingActionButton.extended(
+      onPressed: () {
+        if (titleController.text.trim().isEmpty ||
+            contentController.text.trim().isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Title and content are required'),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.orange,
             ),
           );
-        },
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Ionicons.arrow_forward_outline, color: Colors.black),
-            SizedBox(width: 10),
-            Text(
-              'Publish Article',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-          ],
+          return;
+        }
+
+        context.read<PublishArticleBloc>().add(
+          PublishArticleSubmitted(
+            title: titleController.text.trim(),
+            content: contentController.text.trim(),
+            imagePath: imagePath,
+          ),
+        );
+      },
+      backgroundColor: Colors.black87,
+      elevation: 4,
+      icon: const Icon(
+        Ionicons.paper_plane_outline,
+        color: Colors.white,
+        size: 20,
+      ),
+      label: const Text(
+        'Publish',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
         ),
       ),
     );
