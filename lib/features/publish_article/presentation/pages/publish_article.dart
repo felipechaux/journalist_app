@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:journalist_app/features/daily_news/presentation/bloc/article/publish/publish_article_bloc.dart';
-import 'package:journalist_app/features/daily_news/presentation/bloc/article/publish/publish_article_event.dart';
-import 'package:journalist_app/features/daily_news/presentation/bloc/article/publish/publish_article_state.dart';
+import 'package:journalist_app/features/publish_article/presentation/bloc/publish_article_bloc.dart';
+import 'package:journalist_app/features/publish_article/presentation/bloc/publish_article_event.dart';
+import 'package:journalist_app/features/publish_article/presentation/bloc/publish_article_state.dart';
 import 'package:journalist_app/injection_container.dart';
 
 class PublishArticlePage extends HookWidget {
