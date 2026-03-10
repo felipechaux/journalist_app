@@ -28,6 +28,7 @@ Overall, working on this app was a fantastic experience. It really helped me sol
 - **Feedback for Offline Sync:** Built visual feedback for users so they know when they are reading offline saved articles or when the app is actively syncing data from the cloud.
 - **Markdown Formatting:** Added a rich text renderer using Markdown so that the articles are beautifully formatted with bold text, lists, and proper headers.
 - **Premium Aesthetics:** Added a visually appealing splash screen with a dynamic shine animation and integrated haptic feedback native to the OS. Also created custom transparent app launcher icons for both Android and iOS.
+- **Unit Testing:** Implemented core tests for domain usecases (`GetArticleUseCase`, `SaveArticleUseCase`) utilizing the `mocktail` package for mocking dependencies, solidifying app stability.
 
 **2. Prototypes Created:**
 - Early UI iterations for the Splash Screen animation to fine-tune the haptic feedback timing.
