@@ -19,6 +19,9 @@ import 'features/daily_news/domain/usecases/save_article.dart';
 import 'features/daily_news/presentation/bloc/article/local/local_article_cubit.dart';
 import 'package:journalist_app/features/publish_article/domain/repository/publish_article_repository.dart';
 import 'package:journalist_app/features/publish_article/presentation/bloc/publish_article_bloc.dart';
+import 'package:journalist_app/features/daily_news/domain/repository/share_article_repository.dart';
+import 'package:journalist_app/features/daily_news/data/repository/share_article_repository_impl.dart';
+import 'package:journalist_app/features/daily_news/domain/usecases/share_article.dart';
 
 final sl = GetIt.instance;
 
@@ -53,6 +56,8 @@ Future<void> initializeDependencies() async {
     sl<ArticleRepository>() as ArticleRepositoryImpl,
   );
 
+  sl.registerSingleton<ShareArticleRepository>(ShareArticleRepositoryImpl());
+
   //UseCases
   sl.registerSingleton<GetArticleUseCase>(GetArticleUseCase(sl()));
 
@@ -63,6 +68,8 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<RemoveArticleUseCase>(RemoveArticleUseCase(sl()));
 
   sl.registerSingleton<PublishArticleUseCase>(PublishArticleUseCase(sl()));
+
+  sl.registerSingleton<ShareArticleUseCase>(ShareArticleUseCase(sl()));
 
   //Blocs
   sl.registerFactory<RemoteArticlesCubit>(() => RemoteArticlesCubit(sl()));

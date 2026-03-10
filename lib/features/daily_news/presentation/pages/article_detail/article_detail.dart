@@ -3,7 +3,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
+import '../../../../../injection_container.dart';
 import '../../../domain/entities/article.dart';
 import '../../bloc/article/local/local_article_cubit.dart';
 import '../../bloc/article_detail/article_detail_cubit.dart';
@@ -21,35 +21,37 @@ class ArticleDetailsView extends StatelessWidget {
     }
 
     return BlocProvider(
-      create: (_) => ArticleDetailCubit(article!)..loadArticleDetails(),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: _buildAppBar(context),
-        body: BlocBuilder<ArticleDetailCubit, ArticleDetailState>(
-          builder: (context, state) {
-            if (state is ArticleDetailLoading) {
-              return const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(color: Colors.black87),
-                    SizedBox(height: 16),
-                    Text(
-                      "Preparing your story...",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic,
+      create: (_) => ArticleDetailCubit(article!, sl())..loadArticleDetails(),
+      child: Builder(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.white,
+          appBar: _buildAppBar(context),
+          body: BlocBuilder<ArticleDetailCubit, ArticleDetailState>(
+            builder: (context, state) {
+              if (state is ArticleDetailLoading) {
+                return const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(color: Colors.black87),
+                      SizedBox(height: 16),
+                      Text(
+                        "Preparing your story...",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return _buildBody(state.article!);
-          },
+                    ],
+                  ),
+                );
+              }
+              return _buildBody(state.article!);
+            },
+          ),
+          floatingActionButton: _buildFloatingActionButton(),
         ),
-        floatingActionButton: _buildFloatingActionButton(),
       ),
     );
   }
@@ -74,7 +76,9 @@ class ArticleDetailsView extends StatelessWidget {
             color: Colors.black87,
             size: 24,
           ),
-          onPressed: () {},
+          onPressed: () {
+            context.read<ArticleDetailCubit>().shareArticle();
+          },
         ),
         const SizedBox(width: 8),
       ],
