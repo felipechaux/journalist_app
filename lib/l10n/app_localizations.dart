@@ -137,7 +137,7 @@ abstract class AppLocalizations {
   /// No description provided for @dailyNewsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Daily News'**
+  /// **'JOURNALIST APP'**
   String get dailyNewsTitle;
 
   /// No description provided for @publishArticleFab.

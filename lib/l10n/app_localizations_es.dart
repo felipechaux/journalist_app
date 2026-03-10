@@ -29,7 +29,7 @@ class AppLocalizationsEs extends AppLocalizations {
       '¡Conexión recuperada! Sincronizando nuevas noticias...';
 
   @override
-  String get dailyNewsTitle => 'Noticias Diarias';
+  String get dailyNewsTitle => 'JOURNALIST APP';
 
   @override
   String get publishArticleFab => 'Publicar';

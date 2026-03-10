@@ -27,7 +27,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onlineMessage => 'Back online! Syncing latest news...';
 
   @override
-  String get dailyNewsTitle => 'Daily News';
+  String get dailyNewsTitle => 'JOURNALIST APP';
 
   @override
   String get publishArticleFab => 'Publish';
