@@ -41,7 +41,16 @@ class DailyNews extends StatelessWidget {
             );
             // Force sync data from server when back online
             context.read<RemoteArticlesCubit>().getArticles(refresh: true);
-            context.read<LocalArticleCubit>().syncSavedArticlesWithRemote();
+            context
+                .read<LocalArticleCubit>()
+                .syncSavedArticlesWithRemote()
+                .then((_) {
+                  if (context.mounted) {
+                    context.read<RemoteArticlesCubit>().getArticles(
+                      refresh: true,
+                    );
+                  }
+                });
           }
         },
         child: Column(

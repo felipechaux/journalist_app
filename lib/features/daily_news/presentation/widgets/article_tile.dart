@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -55,24 +56,39 @@ class ArticleWidget extends StatelessWidget {
     }
     return ClipRRect(
       borderRadius: BorderRadius.circular(12.0),
-      child: CachedNetworkImage(
-        imageUrl: article!.urlToImage!,
-        width: double.infinity,
-        height: 180,
-        fit: BoxFit.cover,
-        placeholder: (context, url) => Container(
-          width: double.infinity,
-          height: 180,
-          color: Colors.black.withValues(alpha: 0.05),
-          child: const CupertinoActivityIndicator(),
-        ),
-        errorWidget: (context, url, error) => Container(
-          width: double.infinity,
-          height: 180,
-          color: Colors.black.withValues(alpha: 0.05),
-          child: const Icon(Icons.error_outline, color: Colors.grey),
-        ),
-      ),
+      child:
+          article!.url == 'DRAFT_ARTICLE' &&
+              !article!.urlToImage!.startsWith('http')
+          ? Image.file(
+              File(article!.urlToImage!),
+              width: double.infinity,
+              height: 180,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: double.infinity,
+                height: 180,
+                color: Colors.black.withValues(alpha: 0.05),
+                child: const Icon(Icons.error_outline, color: Colors.grey),
+              ),
+            )
+          : CachedNetworkImage(
+              imageUrl: article!.urlToImage!,
+              width: double.infinity,
+              height: 180,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Container(
+                width: double.infinity,
+                height: 180,
+                color: Colors.black.withValues(alpha: 0.05),
+                child: const CupertinoActivityIndicator(),
+              ),
+              errorWidget: (context, url, error) => Container(
+                width: double.infinity,
+                height: 180,
+                color: Colors.black.withValues(alpha: 0.05),
+                child: const Icon(Icons.error_outline, color: Colors.grey),
+              ),
+            ),
     );
   }
 
@@ -82,16 +98,43 @@ class ArticleWidget extends StatelessWidget {
       children: [
         // Title
         if (article!.title != null && article!.title!.isNotEmpty)
-          Text(
-            article!.title!,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 20,
-              color: Colors.black87,
-              height: 1.25,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  article!.title!,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20,
+                    color: Colors.black87,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+              if (article!.url == 'DRAFT_ARTICLE')
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  margin: const EdgeInsets.only(left: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade100,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    'DRAFT',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.orange.shade800,
+                    ),
+                  ),
+                ),
+            ],
           ),
 
         const SizedBox(height: 6),

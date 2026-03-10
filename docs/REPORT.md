@@ -34,6 +34,7 @@ You can view a full demonstration of the app's features, including the animated 
 - **Shared Article:** I added native sharing functionality so users can easily share article titles and links via their phone's native share sheet.
 - **Language Support (i18n):** Implemented full English and Spanish localization using `flutter_localizations` and ARB files. Users can toggle the language seamlessly from the app bar.
 - **Feedback for Offline Sync:** Built visual feedback for users so they know when they are reading offline saved articles or when the app is actively syncing data from the cloud.
+- **Offline Article Drafting and Auto-Sync:** Implemented a system that detects when the device is offline during article publishing, saves the article securely as a local draft (complete with cached images and a Draft UI badge), and automatically synchronizes and pushes it to Firebase as soon as the internet connection is restored.
 - **Markdown Formatting:** Added a rich text renderer using Markdown so that the articles are beautifully formatted with bold text, lists, and proper headers.
 - **Premium Aesthetics:** Added a visually appealing splash screen with a dynamic shine animation and integrated haptic feedback native to the OS. Also created custom transparent app launcher icons for both Android and iOS.
 - **Unit Testing:** Implemented core tests for domain usecases (`GetArticleUseCase`, `SaveArticleUseCase`) utilizing the `mocktail` package for mocking dependencies, solidifying app stability.

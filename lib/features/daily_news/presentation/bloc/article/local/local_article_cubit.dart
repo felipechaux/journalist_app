@@ -10,18 +10,22 @@ import 'package:journalist_app/features/daily_news/domain/params/remove_article_
 import '../../../../domain/usecases/get_saved_article.dart';
 import '../../../../domain/usecases/remove_article.dart';
 import '../../../../domain/usecases/save_article.dart';
+import 'package:journalist_app/features/publish_article/domain/usecases/publish_article.dart';
+import 'package:journalist_app/features/publish_article/domain/params/publish_article_params.dart';
 
 class LocalArticleCubit extends Cubit<LocalArticlesState> {
   final GetSavedArticleUseCase _getSavedArticleUseCase;
   final SaveArticleUseCase _saveArticleUseCase;
   final RemoveArticleUseCase _removeArticleUseCase;
   final GetArticleUseCase _getArticleUseCase;
+  final PublishArticleUseCase _publishArticleUseCase;
 
   LocalArticleCubit(
     this._getSavedArticleUseCase,
     this._saveArticleUseCase,
     this._removeArticleUseCase,
     this._getArticleUseCase,
+    this._publishArticleUseCase,
   ) : super(const LocalArticlesLoading()) {
     getSavedArticles();
   }
@@ -45,6 +49,22 @@ class LocalArticleCubit extends Cubit<LocalArticlesState> {
 
       // 3. For each local article, find the latest version in remote
       for (var local in localArticles) {
+        if (local.url == 'DRAFT_ARTICLE') {
+          // Push draft to remote
+          await _publishArticleUseCase(
+            params: PublishArticleParams(
+              article: local,
+              localImagePath: local.urlToImage,
+            ),
+          );
+          // Remove draft after publishing
+          await _removeArticleUseCase(
+            params: RemoveArticleParams(article: local),
+          );
+          updated = true;
+          continue;
+        }
+
         final matchingRemote = remoteArticles.cast<ArticleEntity>().firstWhere((
           r,
         ) {

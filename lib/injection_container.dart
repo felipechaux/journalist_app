@@ -49,7 +49,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<NewsApiService>(NewsApiService(sl()));
 
   sl.registerSingleton<ArticleRepository>(
-    ArticleRepositoryImpl(sl(), sl(), sl()),
+    ArticleRepositoryImpl(sl(), sl(), sl(), sl()),
   );
 
   sl.registerSingleton<PublishArticleRepository>(
@@ -77,7 +77,7 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<PublishArticleBloc>(() => PublishArticleBloc(sl()));
 
   sl.registerFactory<LocalArticleCubit>(
-    () => LocalArticleCubit(sl(), sl(), sl(), sl()),
+    () => LocalArticleCubit(sl(), sl(), sl(), sl(), sl()),
   );
 
   sl.registerFactory<NetworkCubit>(() => NetworkCubit(sl()));

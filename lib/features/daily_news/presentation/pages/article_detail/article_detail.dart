@@ -13,7 +13,7 @@ import 'package:journalist_app/l10n/app_localizations.dart';
 class ArticleDetailsView extends StatelessWidget {
   final ArticleEntity? article;
 
-  const ArticleDetailsView({Key? key, this.article}) : super(key: key);
+  const ArticleDetailsView({super.key, this.article});
 
   @override
   Widget build(BuildContext context) {
