@@ -13,12 +13,13 @@ One of the main challenges was making sure the app worked smoothly offline and o
 Overall, working on this app was a fantastic experience. It really helped me solidify my understanding of Clean Architecture and Bloc/Cubit state management in Flutter. For future directions, I’d love to add features like a personalized dark mode, push notifications for breaking news, and maybe a collaborative editing feature so multiple journalists can work on a draft together.
 
 ### 5. Proof of the project
-*(Insert screenshots or GIFs of the app here)*
-- Splash screen with shine animation
-- Daily News Feed (Online/Offline)
-- Article Detail View with Markdown formatting
-- Publish Article Screen
-- Drawer / Settings for Language Switch
+| Splash Screen | News Feed | Article Detail |
+| :---: | :---: | :---: |
+| ![Splash Screen](assets/splash_screen.png) | ![News Feed](assets/news_feed.png) | ![Article Detail](assets/article_detail.png) |
+
+| Publish Article | Saved Articles | Language Toggle |
+| :---: | :---: | :---: |
+| ![Publish Article](assets/publish_article.png) | ![Saved Articles](assets/saved_articles.png) | ![Language Toggle](assets/language_toggle.png) |
 
 ### 6. Overdelivery
 
