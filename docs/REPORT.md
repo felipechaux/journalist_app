@@ -21,6 +21,13 @@ Overall, working on this app was a fantastic experience. It really helped me sol
 | :---: | :---: | :---: |
 | ![Publish Article](assets/publish_article.png) | ![Saved Articles](assets/saved_articles.png) | ![Language Toggle](assets/language_toggle.png) |
 
+#### Video Prototype
+You can view a full demonstration of the app's features, including the animated splash screen, localization switching, and article publishing in the video below:
+
+[ ![Watch the Video](assets/video_thumbnail.png) ](assets/app_demo.webm)
+
+*(Note: Click the image above or open `docs/assets/app_demo.webm` directly to watch the demo)*
+
 ### 6. Overdelivery
 
 **1. New Features Implemented:**
