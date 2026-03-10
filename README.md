@@ -95,6 +95,7 @@ This project implements **Clean Architecture + BLoC/Cubit + Dependency Injection
 *   **Equatable**: Simplifies object comparison for efficient rebuilding.
 *   **Intl**: Internationalization and localization support.
 *   **Image Picker**: Native access to device gallery/camera.
+*   **Dash Skills (Flutter Agents)**: Enhanced development workflow using AI-driven agents from [dash_skills](https://github.com/kevmoo/dash_skills).
 
 ---
 
