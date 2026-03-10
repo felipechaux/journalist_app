@@ -30,6 +30,11 @@ class _PublishArticleContent extends HookWidget {
   Widget build(BuildContext context) {
     final titleController = useTextEditingController();
     final contentController = useTextEditingController();
+
+    // Hooks to trigger rebuild on text change for counters
+    useListenable(titleController);
+    useListenable(contentController);
+
     final imagePath = useState<String?>(null);
 
     final picker = ImagePicker();
@@ -58,7 +63,7 @@ class _PublishArticleContent extends HookWidget {
                 backgroundColor: Colors.green,
               ),
             );
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           } else if (state is PublishArticleFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -122,6 +127,9 @@ class _PublishArticleContent extends HookWidget {
     );
   }
 
+  static const int maxTitleLength = 100;
+  static const int maxContentLength = 5000;
+
   Widget _buildBody(
     BuildContext context,
     TextEditingController titleController,
@@ -130,132 +138,305 @@ class _PublishArticleContent extends HookWidget {
     Future<void> Function() onPickImage,
     VoidCallback onRemoveImage,
   ) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (currentImagePath != null)
-            Stack(
-              children: [
-                Image.file(
-                  File(currentImagePath),
-                  height: 250,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.black54,
-                    child: IconButton(
-                      icon: const Icon(
-                        Ionicons.trash_outline,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                      onPressed: onRemoveImage,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+    void insertMarkdown(String tagOpen, [String tagClose = '']) {
+      final text = contentController.text;
+      final selection = contentController.selection;
+
+      if (!selection.isValid) {
+        contentController.text = '$text$tagOpen$tagClose';
+        contentController.selection = TextSelection.collapsed(
+          offset: text.length + tagOpen.length,
+        );
+        return;
+      }
+
+      final selectedText = selection.textInside(text);
+
+      final newText = text.replaceRange(
+        selection.start,
+        selection.end,
+        '$tagOpen$selectedText$tagClose',
+      );
+
+      final newOffset = selectedText.isEmpty
+          ? selection.start + tagOpen.length
+          : selection.start +
+                tagOpen.length +
+                selectedText.length +
+                tagClose.length;
+
+      contentController.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newOffset),
+      );
+    }
+
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (currentImagePath == null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 24),
-                    child: InkWell(
-                      onTap: onPickImage,
-                      borderRadius: BorderRadius.circular(16),
-                      child: Container(
-                        height: 120,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: Colors.grey.shade200,
-                            width: 2,
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Ionicons.image_outline,
-                              size: 36,
-                              color: Colors.grey.shade400,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Add Cover Image (Optional)',
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ],
+                if (currentImagePath != null)
+                  Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: onPickImage,
+                        child: Image.file(
+                          File(currentImagePath),
+                          height: 250,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ),
+                      Positioned(
+                        bottom: 16,
+                        right: 16,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Ionicons.camera_outline,
+                                color: Colors.white,
+                                size: 14,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                'Tap to change',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 16,
+                        right: 16,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.black54,
+                          child: IconButton(
+                            icon: const Icon(
+                              Ionicons.trash_outline,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            onPressed: onRemoveImage,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(
-                    hintText: 'Article Title',
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    hintStyle: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
-                  ),
-                  maxLines: null,
-                  textInputAction: TextInputAction.next,
-                ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Divider(color: Colors.grey.shade200, thickness: 1),
-                ),
-                TextField(
-                  controller: contentController,
-                  decoration: InputDecoration(
-                    hintText: 'Write your story here...',
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    hintStyle: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey.shade400,
-                      height: 1.6,
-                    ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 20,
                   ),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black87,
-                    height: 1.6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (currentImagePath == null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 24),
+                          child: InkWell(
+                            onTap: onPickImage,
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              height: 120,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade50,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: Colors.grey.shade200,
+                                  width: 2,
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Ionicons.image_outline,
+                                    size: 36,
+                                    color: Colors.grey.shade400,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Add Cover Image (Optional)',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade500,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: titleController,
+                              maxLength: maxTitleLength,
+                              decoration: InputDecoration(
+                                hintText: 'Article Title',
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                counterText: "", // Hide default counter
+                                hintStyle: TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.grey.shade300,
+                                ),
+                              ),
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black87,
+                              ),
+                              maxLines: null,
+                              textInputAction: TextInputAction.next,
+                            ),
+                          ),
+                          Text(
+                            '${titleController.text.length}/$maxTitleLength',
+                            style: TextStyle(
+                              color:
+                                  titleController.text.length >= maxTitleLength
+                                  ? Colors.red
+                                  : Colors.grey.shade400,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Divider(
+                          color: Colors.grey.shade200,
+                          thickness: 1,
+                        ),
+                      ),
+                      TextField(
+                        controller: contentController,
+                        maxLength: maxContentLength,
+                        decoration: InputDecoration(
+                          hintText: 'Write your story here...',
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          counterText: "", // Hide default counter
+                          hintStyle: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey.shade400,
+                            height: 1.6,
+                          ),
+                        ),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.black87,
+                          height: 1.6,
+                        ),
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                      ),
+                      const SizedBox(
+                        height: 80,
+                      ), // Space for floating action button
+                    ],
                   ),
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
                 ),
-                const SizedBox(height: 80), // Space for floating action button
               ],
             ),
           ),
-        ],
+        ),
+        // Formatting Toolbar
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border(top: BorderSide(color: Colors.grey.shade100)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.03),
+                blurRadius: 10,
+                offset: const Offset(0, -5),
+              ),
+            ],
+          ),
+          child: SafeArea(
+            top: false,
+            child: Row(
+              children: [
+                _buildToolbarIcon(
+                  Ionicons.text_outline,
+                  'H2',
+                  () => insertMarkdown('## '),
+                ),
+                const SizedBox(width: 16),
+                _buildToolbarIcon(
+                  Ionicons.text_outline,
+                  'B',
+                  () => insertMarkdown('**', '**'),
+                ),
+                const Spacer(),
+                Text(
+                  '${contentController.text.length} characters',
+                  style: TextStyle(
+                    color: contentController.text.length >= maxContentLength
+                        ? Colors.red
+                        : Colors.grey.shade500,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildToolbarIcon(IconData icon, String label, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: Colors.black87),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+            ),
+          ],
+        ),
       ),
     );
   }

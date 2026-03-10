@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:journalist_app/features/daily_news/presentation/bloc/article/remote/remote_article_state.dart';
 import 'package:journalist_app/features/daily_news/presentation/bloc/article/remote/remote_article_cubit.dart';
+import 'package:journalist_app/features/daily_news/presentation/bloc/article/local/local_article_cubit.dart';
 
 import 'package:journalist_app/core/network_info/bloc/network_cubit.dart';
 import '../../../domain/entities/article.dart';
@@ -38,6 +39,7 @@ class DailyNews extends StatelessWidget {
             );
             // Force sync data from server when back online
             context.read<RemoteArticlesCubit>().getArticles(refresh: true);
+            context.read<LocalArticleCubit>().syncSavedArticlesWithRemote();
           }
         },
         child: Column(
@@ -170,8 +172,13 @@ class DailyNews extends StatelessWidget {
 
   Widget _buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton.extended(
-      onPressed: () {
-        Navigator.pushNamed(context, '/PublishArticle');
+      onPressed: () async {
+        final result = await Navigator.pushNamed(context, '/PublishArticle');
+        if (result == true) {
+          if (context.mounted) {
+            context.read<RemoteArticlesCubit>().getArticles(refresh: true);
+          }
+        }
       },
       backgroundColor: Colors.black87,
       elevation: 4,

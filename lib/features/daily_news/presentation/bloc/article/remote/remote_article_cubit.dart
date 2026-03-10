@@ -15,12 +15,17 @@ class RemoteArticlesCubit extends Cubit<RemoteArticlesState> {
     emit(const RemoteArticlesLoading());
     final dataState = await _getArticleUseCase(params: refresh);
 
-    if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
-      emit(RemoteArticlesDone(dataState.data!));
+    if (dataState is DataSuccess) {
+      final articles = dataState.data ?? [];
+      emit(RemoteArticlesDone(articles));
     }
 
     if (dataState is DataFailed) {
-      emit(RemoteArticlesError(dataState.error!));
+      if (dataState.error != null) {
+        emit(RemoteArticlesError(dataState.error!));
+      } else {
+        // Fallback or ignore if error is somehow null
+      }
     }
   }
 }

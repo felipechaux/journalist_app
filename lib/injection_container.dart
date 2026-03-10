@@ -70,7 +70,7 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<PublishArticleBloc>(() => PublishArticleBloc(sl()));
 
   sl.registerFactory<LocalArticleCubit>(
-    () => LocalArticleCubit(sl(), sl(), sl()),
+    () => LocalArticleCubit(sl(), sl(), sl(), sl()),
   );
 
   sl.registerFactory<NetworkCubit>(() => NetworkCubit(sl()));

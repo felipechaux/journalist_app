@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../../../../injection_container.dart';
+
 import '../../../domain/entities/article.dart';
 import '../../bloc/article/local/local_article_cubit.dart';
 import '../../bloc/article_detail/article_detail_cubit.dart';
@@ -19,13 +20,8 @@ class ArticleDetailsView extends StatelessWidget {
       return const Scaffold(body: Center(child: Text('Article not found.')));
     }
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => sl<LocalArticleCubit>()),
-        BlocProvider(
-          create: (_) => ArticleDetailCubit(article!)..loadArticleDetails(),
-        ),
-      ],
+    return BlocProvider(
+      create: (_) => ArticleDetailCubit(article!)..loadArticleDetails(),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: _buildAppBar(context),
@@ -201,17 +197,41 @@ class ArticleDetailsView extends StatelessWidget {
   Widget _buildArticleDescription(ArticleEntity article) {
     final bodyContent =
         '${article.description ?? ''}\n\n${article.content ?? ''}';
+
+    if (bodyContent.trim().isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Text(
+          'No content available.',
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      );
+    }
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 100), // Space for FAB
-      child: Text(
-        bodyContent.trim().isEmpty
-            ? 'No content available.'
-            : bodyContent.trim(),
-        style: const TextStyle(
-          fontSize: 18,
-          color: Colors.black87,
-          height: 1.6,
-          fontWeight: FontWeight.w400,
+      padding: const EdgeInsets.fromLTRB(
+        24,
+        16,
+        24,
+        120,
+      ), // Extra space for FAB
+      child: MarkdownBody(
+        data: bodyContent.trim(),
+        styleSheet: MarkdownStyleSheet(
+          p: const TextStyle(
+            fontSize: 18,
+            color: Colors.black87,
+            height: 1.6,
+            fontWeight: FontWeight.w400,
+          ),
+          h2: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+            height: 1.4,
+          ),
+          strong: const TextStyle(fontWeight: FontWeight.bold),
+          listBullet: const TextStyle(fontSize: 18, color: Colors.black87),
         ),
       ),
     );

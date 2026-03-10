@@ -5,6 +5,7 @@ import 'package:journalist_app/features/daily_news/presentation/pages/home/daily
 import 'config/theme/app_themes.dart';
 import 'package:journalist_app/features/daily_news/presentation/bloc/article/remote/remote_article_cubit.dart';
 import 'package:journalist_app/core/network_info/bloc/network_cubit.dart';
+import 'package:journalist_app/features/daily_news/presentation/bloc/article/local/local_article_cubit.dart';
 import 'injection_container.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<RemoteArticlesCubit>(create: (context) => sl()),
+        BlocProvider<LocalArticleCubit>(create: (context) => sl()),
         BlocProvider<NetworkCubit>(create: (context) => sl()),
       ],
       child: MaterialApp(

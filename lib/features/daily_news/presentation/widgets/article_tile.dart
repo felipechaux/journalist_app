@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import '../../domain/entities/article.dart';
 
 class ArticleWidget extends StatelessWidget {
@@ -94,45 +95,72 @@ class ArticleWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Title
-            Text(
-              article!.title ?? '',
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontFamily: 'Butler',
-                fontWeight: FontWeight.w900,
-                fontSize: 18,
-                color: Colors.black87,
-              ),
-            ),
-
-            // Content
-            if (article!.content != null && article!.content!.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Text(
-                  article!.content!,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                  ),
+            if (article!.title != null && article!.title!.isNotEmpty)
+              Text(
+                article!.title!,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontFamily: 'Butler',
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18,
+                  color: Colors.black87,
                 ),
               ),
 
-            // Description (only if it exists and is different from content)
-            if (article!.description != null &&
-                article!.description!.isNotEmpty &&
-                article!.description != article!.content)
+            // Content
+            if (article!.content != null && article!.content!.isNotEmpty)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: ClipRect(
+                    child: MarkdownBody(
+                      data: article!.content!,
+                      styleSheet: MarkdownStyleSheet(
+                        p: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        h2: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                        strong: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                        listBullet: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            else if (article!.description != null &&
+                article!.description!.isNotEmpty)
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    article!.description ?? '',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  child: ClipRect(
+                    child: MarkdownBody(
+                      data: article!.description!,
+                      styleSheet: MarkdownStyleSheet(
+                        p: const TextStyle(fontSize: 13, color: Colors.black54),
+                        h2: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                        strong: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               )
@@ -140,15 +168,18 @@ class ArticleWidget extends StatelessWidget {
               const Spacer(),
 
             // Datetime
-            Row(
-              children: [
-                const Icon(Icons.timeline_outlined, size: 16),
-                const SizedBox(width: 4),
-                Text(
-                  article!.publishedAt!,
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Row(
+                children: [
+                  const Icon(Icons.timeline_outlined, size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    article!.publishedAt ?? '',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

@@ -3,7 +3,7 @@ import 'package:journalist_app/features/daily_news/data/models/article.dart';
 
 @dao
 abstract class ArticleDao {
-  @Insert()
+  @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertArticle(ArticleModel article);
 
   @delete

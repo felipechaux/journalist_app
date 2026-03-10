@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
-import '../../../../../injection_container.dart';
 import '../../../domain/entities/article.dart';
 import '../../bloc/article/local/local_article_cubit.dart';
 import '../../bloc/article/local/local_article_state.dart';
@@ -14,10 +13,7 @@ class SavedArticles extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<LocalArticleCubit>(),
-      child: Scaffold(appBar: _buildAppBar(), body: _buildBody()),
-    );
+    return Scaffold(appBar: _buildAppBar(), body: _buildBody());
   }
 
   PreferredSizeWidget _buildAppBar() {
