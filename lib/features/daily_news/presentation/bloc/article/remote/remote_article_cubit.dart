@@ -11,9 +11,9 @@ class RemoteArticlesCubit extends Cubit<RemoteArticlesState> {
     getArticles(); // Fetch automatically on creation
   }
 
-  Future<void> getArticles() async {
+  Future<void> getArticles({bool refresh = false}) async {
     emit(const RemoteArticlesLoading());
-    final dataState = await _getArticleUseCase();
+    final dataState = await _getArticleUseCase(params: refresh);
 
     if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
       emit(RemoteArticlesDone(dataState.data!));

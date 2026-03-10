@@ -28,6 +28,7 @@ class DailyNews extends StatelessWidget {
               ),
             );
           } else if (state == NetworkStatus.connected) {
+            ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Back online! Syncing latest news...'),
@@ -35,8 +36,8 @@ class DailyNews extends StatelessWidget {
                 duration: Duration(seconds: 2),
               ),
             );
-            // Sync data when back online
-            context.read<RemoteArticlesCubit>().getArticles();
+            // Force sync data from server when back online
+            context.read<RemoteArticlesCubit>().getArticles(refresh: true);
           }
         },
         child: Column(

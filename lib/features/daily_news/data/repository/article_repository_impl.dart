@@ -51,9 +51,13 @@ class ArticleRepositoryImpl
   }
 
   @override
-  Future<DataState<List<ArticleEntity>>> getFirebaseArticles() async {
+  Future<DataState<List<ArticleEntity>>> getFirebaseArticles({
+    bool? refresh,
+  }) async {
     try {
-      final articles = await _firebaseArticleService.getArticles();
+      final articles = await _firebaseArticleService.getArticles(
+        forceRefresh: refresh ?? false,
+      );
       return DataSuccess(articles);
     } catch (e) {
       return DataFailed(

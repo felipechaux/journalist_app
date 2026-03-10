@@ -37,11 +37,11 @@ class FirebaseArticleService {
     await _firestore.collection('articles').add(articleData);
   }
 
-  Future<List<ArticleModel>> getArticles() async {
+  Future<List<ArticleModel>> getArticles({bool forceRefresh = false}) async {
     final snapshot = await _firestore
         .collection('articles')
         .orderBy('publishedAt', descending: true)
-        .get();
+        .get(forceRefresh ? const GetOptions(source: Source.server) : null);
     return snapshot.docs.map((doc) {
       final data = doc.data();
       return ArticleModel.fromJson(data);
