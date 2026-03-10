@@ -31,7 +31,7 @@ You can view a full demonstration of the app's features, including the animated 
 #### Offline Draft Publishing Video
 You can watch the draft publication, saving as draft, and auto-syncing feature when connection is established:
 
-[<img src="assets/video_thumbnail.png" alt="Watch the Draft Feature Video" width="300"/>](assets/draft_feature.webm)
+[<img src="assets/draft_thumbnail.png" alt="Watch the Draft Feature Video" width="300"/>](assets/draft_feature.webm)
 
 *(Note: Click the image above or open `docs/assets/draft_feature.webm` directly to watch the demo)*
 
