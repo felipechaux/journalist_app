@@ -29,18 +29,10 @@ This project implements **Clean Architecture + BLoC/Cubit + Dependency Injection
                   │
 ┌─────────────────▼───────────────────────────┐
 │        DATA (Implementation Layer)          │
-│  - Repository Impl: ArticleRepositoryImpl    │
+│  - Repository Impl: ArticleRepositoryImpl   │
 │  - Data Sources: Remote & Local             │
-│  - Models: ArticleModel                     │
-│  - Mappers: DTO to Entity conversions       │
-└─────────────────┬───────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────┐
-│     FRAMEWORK (Infrastructure Layer)        │
-│  - Firebase Firestore (Remote Storage)      │
-│  - Firebase Storage (Images)                │
-│  - Floor (Local Persistence)                 │
-│  - Dio (API Integration)         │
+│  - API Integration: Dio, Firebase           │
+│  - Local Persistence: Floor                 │
 └─────────────────────────────────────────────┘
 ```
 
@@ -92,6 +84,7 @@ This project implements **Clean Architecture + BLoC/Cubit + Dependency Injection
 *   **Dio**: Robust HTTP client for REST API interaction.
 
 #### 🔧 Utility
+*   **Share Plus**: Native OS share sheet integration for rich text and media sharing.
 *   **Equatable**: Simplifies object comparison for efficient rebuilding.
 *   **Intl**: Internationalization and localization support.
 *   **Image Picker**: Native access to device gallery/camera.
@@ -103,7 +96,8 @@ This project implements **Clean Architecture + BLoC/Cubit + Dependency Injection
 1.  **News Feed**: Real-time article fetching from both standard APIs and custom Firestore streams.
 2.  **Journalist Workflow**: Create and publish articles with image support directly to the cloud.
 3.  **Offline Reading**: Save articles locally using the Floor database for reading without connectivity.
-4.  **Premium UX**: Smooth transitions and specific state handling for image-heavy content.
+4.  **Native Sharing**: Extracted article content, descriptions and URLs perfectly formatted and shared seamlessly through native OS share sheets.
+5.  **Premium UX**: Smooth transitions and specific state handling for image-heavy content.
 
 ## 🚀 Getting Started
 1. Clone the repository.
