@@ -37,7 +37,7 @@ You can view a full demonstration of the app's features, including the animated 
 - **Offline Article Drafting and Auto-Sync:** Implemented a system that detects when the device is offline during article publishing, saves the article securely as a local draft (complete with cached images and a Draft UI badge), and automatically synchronizes and pushes it to Firebase as soon as the internet connection is restored.
 - **Markdown Formatting:** Added a rich text renderer using Markdown so that the articles are beautifully formatted with bold text, lists, and proper headers.
 - **Premium Aesthetics:** Added a visually appealing splash screen with a dynamic shine animation and integrated haptic feedback native to the OS. Also created custom transparent app launcher icons for both Android and iOS.
-- **Unit Testing:** Implemented core tests for domain usecases (`GetArticleUseCase`, `SaveArticleUseCase`) utilizing the `mocktail` package for mocking dependencies, solidifying app stability.
+- **Unit Testing:** Implemented core tests for domain usecases (`GetArticleUseCase`, `SaveArticleUseCase`, `PublishArticleUseCase`) utilizing the `mocktail` package for mocking dependencies, solidifying app stability.
 
 **2. Prototypes Created:**
 - **Offline Draft & Auto-Sync Flow:**
