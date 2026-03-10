@@ -36,4 +36,15 @@ class FirebaseArticleService {
 
     await _firestore.collection('articles').add(articleData);
   }
+
+  Future<List<ArticleModel>> getArticles() async {
+    final snapshot = await _firestore
+        .collection('articles')
+        .orderBy('publishedAt', descending: true)
+        .get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return ArticleModel.fromJson(data);
+    }).toList();
+  }
 }

@@ -14,6 +14,7 @@ import 'features/daily_news/domain/usecases/get_saved_article.dart';
 import 'features/daily_news/domain/usecases/remove_article.dart';
 import 'features/daily_news/domain/usecases/save_article.dart';
 import 'features/daily_news/presentation/bloc/article/local/local_article_cubit.dart';
+import 'package:journalist_app/features/publish_article/domain/repository/publish_article_repository.dart';
 import 'package:journalist_app/features/publish_article/presentation/bloc/publish_article_bloc.dart';
 
 final sl = GetIt.instance;
@@ -39,6 +40,10 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<ArticleRepository>(
     ArticleRepositoryImpl(sl(), sl(), sl()),
+  );
+
+  sl.registerSingleton<PublishArticleRepository>(
+    sl<ArticleRepository>() as ArticleRepositoryImpl,
   );
 
   //UseCases

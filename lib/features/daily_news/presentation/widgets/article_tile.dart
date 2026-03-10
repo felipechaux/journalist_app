@@ -106,13 +106,38 @@ class ArticleWidget extends StatelessWidget {
               ),
             ),
 
-            // Description
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(article!.description ?? '', maxLines: 2),
+            // Content
+            if (article!.content != null && article!.content!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  article!.content!,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
+
+            // Description (only if it exists and is different from content)
+            if (article!.description != null &&
+                article!.description!.isNotEmpty &&
+                article!.description != article!.content)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    article!.description ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              )
+            else
+              const Spacer(),
 
             // Datetime
             Row(

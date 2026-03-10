@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:journalist_app/core/resources/data_state.dart';
 import 'package:journalist_app/features/daily_news/domain/entities/article.dart';
 import 'package:journalist_app/features/publish_article/domain/usecases/publish_article.dart';
+import 'package:journalist_app/features/publish_article/domain/params/publish_article_params.dart';
 
 import 'publish_article_event.dart';
 import 'publish_article_state.dart';

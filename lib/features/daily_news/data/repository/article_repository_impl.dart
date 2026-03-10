@@ -7,11 +7,13 @@ import 'package:journalist_app/features/daily_news/data/models/article.dart';
 import 'package:journalist_app/core/resources/data_state.dart';
 import 'package:journalist_app/features/daily_news/domain/entities/article.dart';
 import 'package:journalist_app/features/daily_news/domain/repository/article_repository.dart';
+import 'package:journalist_app/features/publish_article/domain/repository/publish_article_repository.dart';
 
 import '../data_sources/remote/firebase_article_service.dart';
 import '../data_sources/remote/news_api_service.dart';
 
-class ArticleRepositoryImpl implements ArticleRepository {
+class ArticleRepositoryImpl
+    implements ArticleRepository, PublishArticleRepository {
   final NewsApiService _newsApiService;
   final AppDatabase _appDatabase;
   final FirebaseArticleService _firebaseArticleService;
@@ -45,6 +47,21 @@ class ArticleRepositoryImpl implements ArticleRepository {
       }
     } on DioException catch (e) {
       return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<ArticleEntity>>> getFirebaseArticles() async {
+    try {
+      final articles = await _firebaseArticleService.getArticles();
+      return DataSuccess(articles);
+    } catch (e) {
+      return DataFailed(
+        DioException(
+          error: e.toString(),
+          requestOptions: RequestOptions(path: ''),
+        ),
+      );
     }
   }
 

@@ -10,7 +10,7 @@ class GetArticleUseCase
   GetArticleUseCase(this._articleRepository);
 
   @override
-  Future<DataState<List<ArticleEntity>>> call({void params}) {
-    return _articleRepository.getNewsArticles();
+  Future<DataState<List<ArticleEntity>>> call({void params}) async {
+    return _articleRepository.getFirebaseArticles();
   }
 }

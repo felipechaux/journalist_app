@@ -1,26 +1,19 @@
 import 'package:journalist_app/core/resources/data_state.dart';
 import 'package:journalist_app/core/usecase/usecase.dart';
-import 'package:journalist_app/features/daily_news/domain/entities/article.dart';
-import 'package:journalist_app/features/daily_news/domain/repository/article_repository.dart';
+import 'package:journalist_app/features/publish_article/domain/repository/publish_article_repository.dart';
+import 'package:journalist_app/features/publish_article/domain/params/publish_article_params.dart';
 
 class PublishArticleUseCase
     implements UseCase<DataState<void>, PublishArticleParams> {
-  final ArticleRepository _articleRepository;
+  final PublishArticleRepository _publishArticleRepository;
 
-  PublishArticleUseCase(this._articleRepository);
+  PublishArticleUseCase(this._publishArticleRepository);
 
   @override
-  Future<DataState<void>> call({PublishArticleParams? params}) {
-    return _articleRepository.publishArticle(
+  Future<DataState<void>> call({PublishArticleParams? params}) async {
+    return _publishArticleRepository.publishArticle(
       params!.article,
       localImagePath: params.localImagePath,
     );
   }
-}
-
-class PublishArticleParams {
-  final ArticleEntity article;
-  final String? localImagePath;
-
-  PublishArticleParams({required this.article, this.localImagePath});
 }

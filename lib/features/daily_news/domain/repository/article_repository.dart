@@ -5,6 +5,8 @@ abstract class ArticleRepository {
   // API methods
   Future<DataState<List<ArticleEntity>>> getNewsArticles();
 
+  Future<DataState<List<ArticleEntity>>> getFirebaseArticles();
+
   // Database methods
   Future<List<ArticleEntity>> getSavedArticles();
 

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../../injection_container.dart';
 import '../../../domain/entities/article.dart';
 import '../../bloc/article/local/local_article_cubit.dart';
+import '../../bloc/article_detail/article_detail_cubit.dart';
+import '../../bloc/article_detail/article_detail_state.dart';
 
-class ArticleDetailsView extends HookWidget {
+class ArticleDetailsView extends StatelessWidget {
   final ArticleEntity? article;
 
   const ArticleDetailsView({Key? key, this.article}) : super(key: key);
@@ -17,12 +19,40 @@ class ArticleDetailsView extends HookWidget {
       return const Scaffold(body: Center(child: Text('Article not found.')));
     }
 
-    return BlocProvider(
-      create: (_) => sl<LocalArticleCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<LocalArticleCubit>()),
+        BlocProvider(
+          create: (_) => ArticleDetailCubit(article!)..loadArticleDetails(),
+        ),
+      ],
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: _buildAppBar(context),
-        body: _buildBody(),
+        body: BlocBuilder<ArticleDetailCubit, ArticleDetailState>(
+          builder: (context, state) {
+            if (state is ArticleDetailLoading) {
+              return const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(color: Colors.black87),
+                    SizedBox(height: 16),
+                    Text(
+                      "Preparing your story...",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return _buildBody(state.article!);
+          },
+        ),
         floatingActionButton: _buildFloatingActionButton(),
       ),
     );
@@ -59,22 +89,22 @@ class ArticleDetailsView extends HookWidget {
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(ArticleEntity article) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildArticleTitleAndDate(),
-          if (article!.urlToImage != null && article!.urlToImage!.isNotEmpty)
-            _buildArticleImage(),
-          _buildArticleDescription(),
+          _buildArticleTitleAndDate(article),
+          if (article.urlToImage != null && article.urlToImage!.isNotEmpty)
+            _buildArticleImage(article),
+          _buildArticleDescription(article),
         ],
       ),
     );
   }
 
-  Widget _buildArticleTitleAndDate() {
+  Widget _buildArticleTitleAndDate(ArticleEntity article) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
       child: Column(
@@ -82,7 +112,7 @@ class ArticleDetailsView extends HookWidget {
         children: [
           // Title
           Text(
-            article!.title ?? 'Unknown Title',
+            article.title ?? 'Unknown Title',
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w800,
@@ -102,7 +132,7 @@ class ArticleDetailsView extends HookWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                article!.publishedAt ?? 'Unknown Date',
+                article.publishedAt ?? 'Unknown Date',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -110,7 +140,7 @@ class ArticleDetailsView extends HookWidget {
                 ),
               ),
               const SizedBox(width: 16), // Spacing between time and author
-              if (article!.author != null && article!.author!.isNotEmpty) ...[
+              if (article.author != null && article.author!.isNotEmpty) ...[
                 Icon(
                   Ionicons.person_outline,
                   size: 18,
@@ -119,7 +149,7 @@ class ArticleDetailsView extends HookWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    article!.author!,
+                    article.author!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -137,15 +167,26 @@ class ArticleDetailsView extends HookWidget {
     );
   }
 
-  Widget _buildArticleImage() {
+  Widget _buildArticleImage(ArticleEntity article) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Image.network(
-        article!.urlToImage!,
+      child: CachedNetworkImage(
+        imageUrl: article.urlToImage!,
         width: double.infinity,
         height: 250,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Container(
+        placeholder: (context, url) => Container(
+          width: double.infinity,
+          height: 250,
+          color: Colors.grey.shade50,
+          child: const Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.black12,
+            ),
+          ),
+        ),
+        errorWidget: (context, url, error) => Container(
           width: double.infinity,
           height: 250,
           color: Colors.grey.shade100,
@@ -157,9 +198,9 @@ class ArticleDetailsView extends HookWidget {
     );
   }
 
-  Widget _buildArticleDescription() {
+  Widget _buildArticleDescription(ArticleEntity article) {
     final bodyContent =
-        '${article!.description ?? ''}\n\n${article!.content ?? ''}';
+        '${article.description ?? ''}\n\n${article.content ?? ''}';
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 100), // Space for FAB
       child: Text(
@@ -205,13 +246,16 @@ class ArticleDetailsView extends HookWidget {
   }
 
   void _onFloatingActionButtonPressed(BuildContext context) {
-    BlocProvider.of<LocalArticleCubit>(context).saveArticle(article!);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: Colors.black87,
-        behavior: SnackBarBehavior.floating,
-        content: Text('Article saved successfully!'),
-      ),
-    );
+    final article = context.read<ArticleDetailCubit>().state.article;
+    if (article != null) {
+      BlocProvider.of<LocalArticleCubit>(context).saveArticle(article);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.black87,
+          behavior: SnackBarBehavior.floating,
+          content: Text('Article saved successfully!'),
+        ),
+      );
+    }
   }
 }
