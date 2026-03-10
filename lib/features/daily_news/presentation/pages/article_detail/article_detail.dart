@@ -24,7 +24,7 @@ class ArticleDetailsView extends HookWidget {
         backgroundColor: Colors.white,
         appBar: _buildAppBar(context),
         body: _buildBody(),
-        floatingActionButton: _buildFloatingActionButton(context),
+        floatingActionButton: _buildFloatingActionButton(),
       ),
     );
   }
@@ -177,23 +177,25 @@ class ArticleDetailsView extends HookWidget {
     );
   }
 
-  Widget _buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton.extended(
-      onPressed: () => _onFloatingActionButtonPressed(context),
-      backgroundColor: Colors.black87,
-      elevation: 4,
-      icon: const Icon(
-        Ionicons.bookmark_outline,
-        color: Colors.white,
-        size: 20,
-      ),
-      label: const Text(
-        'Save',
-        style: TextStyle(
+  Widget _buildFloatingActionButton() {
+    return Builder(
+      builder: (context) => FloatingActionButton.extended(
+        onPressed: () => _onFloatingActionButtonPressed(context),
+        backgroundColor: Colors.black87,
+        elevation: 4,
+        icon: const Icon(
+          Ionicons.bookmark_outline,
           color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
+          size: 20,
+        ),
+        label: const Text(
+          'Save',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
         ),
       ),
     );
