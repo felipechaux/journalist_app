@@ -5,6 +5,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:journalist_app/features/daily_news/presentation/bloc/article/remote/remote_article_state.dart';
 import 'package:journalist_app/features/daily_news/presentation/bloc/article/remote/remote_article_cubit.dart';
 
+import 'package:journalist_app/core/network_info/bloc/network_cubit.dart';
 import '../../../domain/entities/article.dart';
 import '../../widgets/article_tile.dart';
 
@@ -16,7 +17,35 @@ class DailyNews extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppbar(context),
-      body: _buildPage(),
+      body: BlocListener<NetworkCubit, NetworkStatus>(
+        listener: (context, state) {
+          if (state == NetworkStatus.disconnected) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('You are offline. Some features may be limited.'),
+                backgroundColor: Colors.redAccent,
+                duration: Duration(seconds: 3),
+              ),
+            );
+          } else if (state == NetworkStatus.connected) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Back online! Syncing latest news...'),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 2),
+              ),
+            );
+            // Sync data when back online
+            context.read<RemoteArticlesCubit>().getArticles();
+          }
+        },
+        child: Column(
+          children: [
+            _buildOfflineBanner(),
+            Expanded(child: _buildPage()),
+          ],
+        ),
+      ),
       floatingActionButton: _buildFloatingActionButton(context),
     );
   }
@@ -155,6 +184,32 @@ class DailyNews extends StatelessWidget {
           letterSpacing: 0.5,
         ),
       ),
+    );
+  }
+
+  Widget _buildOfflineBanner() {
+    return BlocBuilder<NetworkCubit, NetworkStatus>(
+      builder: (context, state) {
+        if (state == NetworkStatus.disconnected) {
+          return Container(
+            width: double.infinity,
+            color: Colors.redAccent,
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.wifi_off, color: Colors.white, size: 16),
+                SizedBox(width: 8),
+                Text(
+                  'Offline Mode',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 
