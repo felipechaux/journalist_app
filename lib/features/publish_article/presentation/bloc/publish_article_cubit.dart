@@ -3,31 +3,25 @@ import 'package:journalist_app/core/resources/data_state.dart';
 import 'package:journalist_app/features/daily_news/domain/entities/article.dart';
 import 'package:journalist_app/features/publish_article/domain/usecases/publish_article.dart';
 
-import 'publish_article_event.dart';
 import 'publish_article_state.dart';
 
-class PublishArticleBloc
-    extends Bloc<PublishArticleEvent, PublishArticleState> {
+class PublishArticleCubit extends Cubit<PublishArticleState> {
   final PublishArticleUseCase publishArticleUseCase;
 
-  PublishArticleBloc(this.publishArticleUseCase)
-    : super(PublishArticleInitial()) {
-    on<PublishArticleSubmitted>(onPublishArticle);
-  }
+  PublishArticleCubit(this.publishArticleUseCase)
+    : super(PublishArticleInitial());
 
-  void onPublishArticle(
-    PublishArticleSubmitted event,
-    Emitter<PublishArticleState> emit,
-  ) async {
+  Future<void> publishArticle({
+    required String title,
+    required String content,
+    String? imagePath,
+  }) async {
     emit(PublishArticleLoading());
 
-    final article = ArticleEntity(title: event.title, content: event.content);
+    final article = ArticleEntity(title: title, content: content);
 
     final result = await publishArticleUseCase(
-      params: PublishArticleParams(
-        article: article,
-        localImagePath: event.imagePath,
-      ),
+      params: PublishArticleParams(article: article, localImagePath: imagePath),
     );
 
     if (result is DataSuccess) {

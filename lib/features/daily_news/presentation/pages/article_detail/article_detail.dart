@@ -4,8 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import '../../../../../injection_container.dart';
 import '../../../domain/entities/article.dart';
-import '../../bloc/article/local/local_article_bloc.dart';
-import '../../bloc/article/local/local_article_event.dart';
+import '../../bloc/article/local/local_article_cubit.dart';
 
 class ArticleDetailsView extends HookWidget {
   final ArticleEntity? article;
@@ -19,7 +18,7 @@ class ArticleDetailsView extends HookWidget {
     }
 
     return BlocProvider(
-      create: (_) => sl<LocalArticleBloc>(),
+      create: (_) => sl<LocalArticleCubit>(),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: _buildAppBar(context),
@@ -206,7 +205,7 @@ class ArticleDetailsView extends HookWidget {
   }
 
   void _onFloatingActionButtonPressed(BuildContext context) {
-    BlocProvider.of<LocalArticleBloc>(context).add(SaveArticle(article!));
+    BlocProvider.of<LocalArticleCubit>(context).saveArticle(article!);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         backgroundColor: Colors.black87,

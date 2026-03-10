@@ -5,8 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import '../../../../../injection_container.dart';
 import '../../../domain/entities/article.dart';
-import '../../bloc/article/local/local_article_bloc.dart';
-import '../../bloc/article/local/local_article_event.dart';
+import '../../bloc/article/local/local_article_cubit.dart';
 import '../../bloc/article/local/local_article_state.dart';
 import '../../widgets/article_tile.dart';
 
@@ -16,7 +15,7 @@ class SavedArticles extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<LocalArticleBloc>()..add(const GetSavedArticles()),
+      create: (_) => sl<LocalArticleCubit>(),
       child: Scaffold(appBar: _buildAppBar(), body: _buildBody()),
     );
   }
@@ -38,7 +37,7 @@ class SavedArticles extends HookWidget {
   }
 
   Widget _buildBody() {
-    return BlocBuilder<LocalArticleBloc, LocalArticlesState>(
+    return BlocBuilder<LocalArticleCubit, LocalArticlesState>(
       builder: (context, state) {
         if (state is LocalArticlesLoading) {
           return const Center(child: CupertinoActivityIndicator());
@@ -75,7 +74,7 @@ class SavedArticles extends HookWidget {
   }
 
   void _onRemoveArticle(BuildContext context, ArticleEntity article) {
-    BlocProvider.of<LocalArticleBloc>(context).add(RemoveArticle(article));
+    BlocProvider.of<LocalArticleCubit>(context).removeArticle(article);
   }
 
   void _onArticlePressed(BuildContext context, ArticleEntity article) {
