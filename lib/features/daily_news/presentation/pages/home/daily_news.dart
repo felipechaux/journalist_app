@@ -57,14 +57,30 @@ class DailyNews extends StatelessWidget {
 
   PreferredSizeWidget _buildAppbar(BuildContext context) {
     return AppBar(
-      title: Text(
-        AppLocalizations.of(context)!.dailyNewsTitle,
-        style: const TextStyle(
-          color: Colors.black87,
-          fontWeight: FontWeight.w700,
-          fontSize: 22,
-          letterSpacing: -0.5,
-        ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            AppLocalizations.of(context)!.dailyNewsTitle.split(' ')[0],
+            style: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w900,
+              fontSize: 26,
+              letterSpacing: -1,
+            ),
+          ),
+          if (AppLocalizations.of(context)!.dailyNewsTitle.contains(' '))
+            Text(
+              AppLocalizations.of(context)!.dailyNewsTitle.split(' ')[1],
+              style: TextStyle(
+                color: Colors.grey.shade500,
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                height: 0.8,
+                letterSpacing: 2,
+              ),
+            ),
+        ],
       ),
       centerTitle: false,
       elevation: 0,
@@ -76,25 +92,21 @@ class DailyNews extends StatelessWidget {
           icon: const Icon(
             Ionicons.language_outline,
             color: Colors.black87,
-            size: 26,
+            size: 24,
           ),
-          splashRadius: 24,
+          splashRadius: 20,
         ),
         IconButton(
           onPressed: () => _onShowSavedArticlesViewTapped(context),
           icon: const Icon(
-            Ionicons.bookmark_outline,
+            Ionicons.bookmarks_outline,
             color: Colors.black87,
-            size: 26,
+            size: 24,
           ),
-          splashRadius: 24,
+          splashRadius: 20,
         ),
         const SizedBox(width: 8),
       ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Container(color: Colors.grey.shade100, height: 1),
-      ),
     );
   }
 
@@ -164,14 +176,11 @@ class DailyNews extends StatelessWidget {
   ) {
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 12,
-      ).copyWith(bottom: 100), // Space for FAB
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
       itemCount: articles.length,
       itemBuilder: (context, index) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: ArticleWidget(
             article: articles[index],
             onArticlePressed: (article) => _onArticlePressed(context, article),

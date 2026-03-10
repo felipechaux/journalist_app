@@ -23,18 +23,26 @@ class ArticleWidget extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: _onTap,
       child: Container(
-        padding: const EdgeInsetsDirectional.only(
-          start: 14,
-          end: 14,
-          bottom: 7,
-          top: 7,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        height: MediaQuery.of(context).size.width / 2.2,
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildImage(context),
+            const SizedBox(height: 12),
             _buildTitleAndDescription(),
-            _buildRemovableArea(),
+            const SizedBox(height: 8),
+            _buildFooter(),
           ],
         ),
       ),
@@ -42,115 +50,91 @@ class ArticleWidget extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: article!.urlToImage!,
-      imageBuilder: (context, imageProvider) => Padding(
-        padding: const EdgeInsetsDirectional.only(end: 14),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20.0),
-          child: Container(
-            width: MediaQuery.of(context).size.width / 3,
-            height: double.maxFinite,
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.08),
-              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-            ),
-          ),
+    if (article!.urlToImage == null || article!.urlToImage!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12.0),
+      child: CachedNetworkImage(
+        imageUrl: article!.urlToImage!,
+        width: double.infinity,
+        height: 180,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Container(
+          width: double.infinity,
+          height: 180,
+          color: Colors.black.withValues(alpha: 0.05),
+          child: const CupertinoActivityIndicator(),
         ),
-      ),
-      progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
-        padding: const EdgeInsetsDirectional.only(end: 14),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20.0),
-          child: Container(
-            width: MediaQuery.of(context).size.width / 3,
-            height: double.maxFinite,
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.08),
-            ),
-            child: const CupertinoActivityIndicator(),
-          ),
-        ),
-      ),
-      errorWidget: (context, url, error) => Padding(
-        padding: const EdgeInsetsDirectional.only(end: 14),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20.0),
-          child: Container(
-            width: MediaQuery.of(context).size.width / 3,
-            height: double.maxFinite,
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.08),
-            ),
-            child: const Icon(Icons.error),
-          ),
+        errorWidget: (context, url, error) => Container(
+          width: double.infinity,
+          height: 180,
+          color: Colors.black.withValues(alpha: 0.05),
+          child: const Icon(Icons.error_outline, color: Colors.grey),
         ),
       ),
     );
   }
 
   Widget _buildTitleAndDescription() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 7),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Title
-            if (article!.title != null && article!.title!.isNotEmpty)
-              Text(
-                article!.title!,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'Butler',
-                  fontWeight: FontWeight.w900,
-                  fontSize: 18,
-                  color: Colors.black87,
-                ),
-              ),
-
-            // Description / Snippet
-            if ((article!.description ?? article!.content) != null)
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text(
-                    (article!.description != null &&
-                            article!.description!.isNotEmpty)
-                        ? article!.description!
-                        : article!.content!.replaceAll(RegExp(r'[#*`_]'), ''),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              )
-            else
-              const Spacer(),
-
-            // Datetime
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Row(
-                children: [
-                  const Icon(Icons.timeline_outlined, size: 16),
-                  const SizedBox(width: 4),
-                  Text(
-                    article!.publishedAt ?? '',
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Title
+        if (article!.title != null && article!.title!.isNotEmpty)
+          Text(
+            article!.title!,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 20,
+              color: Colors.black87,
+              height: 1.25,
             ),
-          ],
+          ),
+
+        const SizedBox(height: 6),
+
+        // Snippet
+        if ((article!.description ?? article!.content) != null)
+          Text(
+            (article!.description != null && article!.description!.isNotEmpty)
+                ? article!.description!
+                : article!.content!.replaceAll(RegExp(r'[#*`_]'), ''),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w400,
+              height: 1.5,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildFooter() {
+    return Row(
+      children: [
+        Icon(
+          Icons.calendar_today_outlined,
+          size: 14,
+          color: Colors.grey.shade500,
         ),
-      ),
+        const SizedBox(width: 4),
+        Text(
+          article!.publishedAt ?? '',
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey.shade500,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const Spacer(),
+        _buildRemovableArea(),
+      ],
     );
   }
 
@@ -158,13 +142,17 @@ class ArticleWidget extends StatelessWidget {
     if (isRemovable!) {
       return GestureDetector(
         onTap: _onRemove,
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Icon(Icons.remove_circle_outline, color: Colors.red),
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: Colors.red.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.delete_outline, color: Colors.red, size: 18),
         ),
       );
     }
-    return Container();
+    return const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.black26);
   }
 
   void _onTap() {
