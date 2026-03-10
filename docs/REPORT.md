@@ -17,9 +17,9 @@ Overall, working on this app was a fantastic experience. It really helped me sol
 | :---: | :---: | :---: |
 | ![Splash Screen](assets/splash_screen.png) | ![News Feed](assets/news_feed.png) | ![Article Detail](assets/article_detail.png) |
 
-| Publish Article | Saved Articles | Language Toggle |
-| :---: | :---: | :---: |
-| ![Publish Article](assets/publish_article.png) | ![Saved Articles](assets/saved_articles.png) | ![Language Toggle](assets/language_toggle.png) |
+| Publish Article | Saved Articles |
+| :---: | :---: |
+| ![Publish Article](assets/publish_article.png) | ![Saved Articles](assets/saved_articles.png) |
 
 #### Video Prototype
 You can view a full demonstration of the app's features, including the animated splash screen, localization switching, and article publishing in the video below:
