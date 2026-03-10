@@ -42,6 +42,19 @@ You can view a full demonstration of the app's features, including the animated 
 **2. Prototypes Created:**
 - Early UI iterations for the Splash Screen animation to fine-tune the haptic feedback timing.
 - Used `l10n.yaml` to dynamically generate state-managed translation delegates instead of relying on outdated synthetic generation.
+- **Offline Draft & Auto-Sync Flow:**
+  ```mermaid
+  graph TD
+      A[Publish Article] --> B{Network Connected?}
+      B -- Yes --> C[FirebaseArticleService]
+      B -- No --> D[Save to AppDatabase as DRAFT_ARTICLE]
+      D --> E[Wait for Connection]
+      E -. NetworkCubit detects connection .-> F[LocalArticleCubit Sync]
+      F --> G[Upload DRAFT_ARTICLE to Firebase]
+      G --> H[Remove Local Draft]
+      H --> I[Refresh DailyNews Feed]
+      C --> I
+  ```
 
 **3. How Can You Improve This:**
 - **Dark Mode:** Adding a system-aware dark mode would make the reading experience much better at night.
