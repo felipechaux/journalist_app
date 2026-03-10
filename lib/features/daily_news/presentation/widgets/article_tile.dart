@@ -11,12 +11,12 @@ class ArticleWidget extends StatelessWidget {
   final void Function(ArticleEntity article)? onArticlePressed;
 
   const ArticleWidget({
-    Key? key,
+    super.key,
     this.article,
     this.onArticlePressed,
     this.isRemovable = false,
     this.onRemove,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class ArticleWidget extends StatelessWidget {
             width: MediaQuery.of(context).size.width / 3,
             height: double.maxFinite,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
             ),
           ),
@@ -66,8 +66,10 @@ class ArticleWidget extends StatelessWidget {
           child: Container(
             width: MediaQuery.of(context).size.width / 3,
             height: double.maxFinite,
-            child: CupertinoActivityIndicator(),
-            decoration: BoxDecoration(color: Colors.black.withOpacity(0.08)),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.08),
+            ),
+            child: const CupertinoActivityIndicator(),
           ),
         ),
       ),
@@ -78,8 +80,10 @@ class ArticleWidget extends StatelessWidget {
           child: Container(
             width: MediaQuery.of(context).size.width / 3,
             height: double.maxFinite,
-            child: Icon(Icons.error),
-            decoration: BoxDecoration(color: Colors.black.withOpacity(0.08)),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.08),
+            ),
+            child: const Icon(Icons.error),
           ),
         ),
       ),

@@ -7,11 +7,13 @@ import 'package:journalist_app/features/daily_news/presentation/bloc/article/rem
 import 'package:journalist_app/features/daily_news/presentation/bloc/article/local/local_article_cubit.dart';
 
 import 'package:journalist_app/core/network_info/bloc/network_cubit.dart';
+import 'package:journalist_app/l10n/app_localizations.dart';
+import 'package:journalist_app/core/localization/bloc/locale_cubit.dart';
 import '../../../domain/entities/article.dart';
 import '../../widgets/article_tile.dart';
 
 class DailyNews extends StatelessWidget {
-  const DailyNews({Key? key}) : super(key: key);
+  const DailyNews({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,19 +24,19 @@ class DailyNews extends StatelessWidget {
         listener: (context, state) {
           if (state == NetworkStatus.disconnected) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('You are offline. Some features may be limited.'),
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.offlineMessage),
                 backgroundColor: Colors.redAccent,
-                duration: Duration(seconds: 3),
+                duration: const Duration(seconds: 3),
               ),
             );
           } else if (state == NetworkStatus.connected) {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Back online! Syncing latest news...'),
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.onlineMessage),
                 backgroundColor: Colors.green,
-                duration: Duration(seconds: 2),
+                duration: const Duration(seconds: 2),
               ),
             );
             // Force sync data from server when back online
@@ -55,9 +57,9 @@ class DailyNews extends StatelessWidget {
 
   PreferredSizeWidget _buildAppbar(BuildContext context) {
     return AppBar(
-      title: const Text(
-        'Daily News',
-        style: TextStyle(
+      title: Text(
+        AppLocalizations.of(context)!.dailyNewsTitle,
+        style: const TextStyle(
           color: Colors.black87,
           fontWeight: FontWeight.w700,
           fontSize: 22,
@@ -69,6 +71,15 @@ class DailyNews extends StatelessWidget {
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       actions: [
+        IconButton(
+          onPressed: () => context.read<LocaleCubit>().toggleLanguage(),
+          icon: const Icon(
+            Ionicons.language_outline,
+            color: Colors.black87,
+            size: 26,
+          ),
+          splashRadius: 24,
+        ),
         IconButton(
           onPressed: () => _onShowSavedArticlesViewTapped(context),
           icon: const Icon(
@@ -183,8 +194,8 @@ class DailyNews extends StatelessWidget {
       backgroundColor: Colors.black87,
       elevation: 4,
       icon: const Icon(Ionicons.create_outline, color: Colors.white, size: 20),
-      label: const Text(
-        'Write',
+      label: Text(
+        AppLocalizations.of(context)!.publishArticleFab,
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,
@@ -203,14 +214,14 @@ class DailyNews extends StatelessWidget {
             width: double.infinity,
             color: Colors.redAccent,
             padding: const EdgeInsets.symmetric(vertical: 4),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.wifi_off, color: Colors.white, size: 16),
-                SizedBox(width: 8),
+                const Icon(Icons.wifi_off, color: Colors.white, size: 16),
+                const SizedBox(width: 8),
                 Text(
-                  'Offline Mode',
-                  style: TextStyle(color: Colors.white, fontSize: 12),
+                  AppLocalizations.of(context)!.offlineMessage,
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ],
             ),

@@ -4,12 +4,16 @@ import '../../features/daily_news/domain/entities/article.dart';
 import '../../features/daily_news/presentation/pages/article_detail/article_detail.dart';
 import '../../features/daily_news/presentation/pages/home/daily_news.dart';
 import '../../features/daily_news/presentation/pages/saved_article/saved_article.dart';
+import '../../features/splash/presentation/pages/splash_screen.dart';
 import '../../features/publish_article/presentation/pages/publish_article.dart';
 
 class AppRoutes {
   static Route onGenerateRoutes(RouteSettings settings) {
     switch (settings.name) {
       case '/':
+        return _materialRoute(const SplashScreen());
+
+      case '/DailyNews':
         return _materialRoute(const DailyNews());
 
       case '/ArticleDetails':

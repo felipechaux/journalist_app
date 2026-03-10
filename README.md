@@ -97,7 +97,8 @@ This project implements **Clean Architecture + BLoC/Cubit + Dependency Injection
 2.  **Journalist Workflow**: Create and publish articles with image support directly to the cloud.
 3.  **Offline Reading**: Save articles locally using the Floor database for reading without connectivity.
 4.  **Native Sharing**: Extracted article content, descriptions and URLs perfectly formatted and shared seamlessly through native OS share sheets.
-5.  **Premium UX**: Smooth transitions and specific state handling for image-heavy content.
+5.  **Multi-language Support (i18n)**: Full English and Spanish localization using `flutter_localizations` and ARB files, easily toggleable via the AppBar.
+6.  **Premium Aesthetics**: Modern animated splash screen with gradient shine and haptic feedback, complemented by a bespoke transparent app icon natively configured for Android and iOS via `flutter_launcher_icons`.
 
 ## 🚀 Getting Started
 1. Clone the repository.

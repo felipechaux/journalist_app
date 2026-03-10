@@ -10,6 +10,7 @@ import 'package:journalist_app/features/publish_article/presentation/bloc/publis
 import 'package:journalist_app/features/publish_article/presentation/bloc/publish_article_event.dart';
 import 'package:journalist_app/features/publish_article/presentation/bloc/publish_article_state.dart';
 import 'package:journalist_app/injection_container.dart';
+import 'package:journalist_app/l10n/app_localizations.dart';
 
 class PublishArticlePage extends HookWidget {
   const PublishArticlePage({super.key});
@@ -57,8 +58,10 @@ class _PublishArticleContent extends HookWidget {
         listener: (context, state) {
           if (state is PublishArticleSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Article published successfully!'),
+              SnackBar(
+                content: Text(
+                  AppLocalizations.of(context)!.articlePublishedSuccess,
+                ),
                 behavior: SnackBarBehavior.floating,
                 backgroundColor: Colors.green,
               ),
@@ -67,7 +70,11 @@ class _PublishArticleContent extends HookWidget {
           } else if (state is PublishArticleFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Error: ${state.error}'),
+                content: Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.errorPrefix(state.error.toString()),
+                ),
                 behavior: SnackBarBehavior.floating,
                 backgroundColor: Colors.redAccent,
               ),
@@ -99,9 +106,9 @@ class _PublishArticleContent extends HookWidget {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      title: const Text(
-        'Draft',
-        style: TextStyle(
+      title: Text(
+        AppLocalizations.of(context)!.draftTitle,
+        style: const TextStyle(
           color: Colors.black87,
           fontWeight: FontWeight.w600,
           fontSize: 18,
@@ -203,18 +210,18 @@ class _PublishArticleContent extends HookWidget {
                             color: Colors.black54,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
+                              const Icon(
                                 Ionicons.camera_outline,
                                 color: Colors.white,
                                 size: 14,
                               ),
-                              SizedBox(width: 4),
+                              const SizedBox(width: 4),
                               Text(
-                                'Tap to change',
-                                style: TextStyle(
+                                AppLocalizations.of(context)!.tapToChange,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
                                 ),
@@ -275,7 +282,7 @@ class _PublishArticleContent extends HookWidget {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    'Add Cover Image (Optional)',
+                                    AppLocalizations.of(context)!.addCoverImage,
                                     style: TextStyle(
                                       color: Colors.grey.shade500,
                                       fontWeight: FontWeight.w500,
@@ -295,7 +302,9 @@ class _PublishArticleContent extends HookWidget {
                               controller: titleController,
                               maxLength: maxTitleLength,
                               decoration: InputDecoration(
-                                hintText: 'Article Title',
+                                hintText: AppLocalizations.of(
+                                  context,
+                                )!.articleTitleHint,
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                                 enabledBorder: InputBorder.none,
@@ -339,7 +348,9 @@ class _PublishArticleContent extends HookWidget {
                         controller: contentController,
                         maxLength: maxContentLength,
                         decoration: InputDecoration(
-                          hintText: 'Write your story here...',
+                          hintText: AppLocalizations.of(
+                            context,
+                          )!.writeStoryHint,
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           enabledBorder: InputBorder.none,
@@ -399,7 +410,9 @@ class _PublishArticleContent extends HookWidget {
                 ),
                 const Spacer(),
                 Text(
-                  '${contentController.text.length} characters',
+                  AppLocalizations.of(
+                    context,
+                  )!.charactersCount(contentController.text.length),
                   style: TextStyle(
                     color: contentController.text.length >= maxContentLength
                         ? Colors.red
@@ -452,8 +465,10 @@ class _PublishArticleContent extends HookWidget {
         if (titleController.text.trim().isEmpty ||
             contentController.text.trim().isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Title and content are required'),
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context)!.titleAndContentRequired,
+              ),
               behavior: SnackBarBehavior.floating,
               backgroundColor: Colors.orange,
             ),
@@ -476,9 +491,9 @@ class _PublishArticleContent extends HookWidget {
         color: Colors.white,
         size: 20,
       ),
-      label: const Text(
-        'Publish',
-        style: TextStyle(
+      label: Text(
+        AppLocalizations.of(context)!.publishArticleFab,
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 16,
           fontWeight: FontWeight.w600,

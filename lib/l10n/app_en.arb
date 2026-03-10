@@ -1,0 +1,43 @@
+{
+  "savedArticlesTitle": "Saved Articles",
+  "noSavedArticles": "NO SAVED ARTICLES",
+  "articleNotFound": "Article not found.",
+  "articleSavedSuccess": "Article saved successfully!",
+  "offlineMessage": "You are offline. Some features may be limited.",
+  "onlineMessage": "Back online! Syncing latest news...",
+  "dailyNewsTitle": "Daily News",
+  "publishArticleFab": "Publish",
+  "publishArticleTitle": "Publish Article",
+  "articlePublishedSuccess": "Article published successfully!",
+  "errorPrefix": "Error: {error}",
+  "@errorPrefix": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "titleLabel": "Title",
+  "contentLabel": "Content",
+  "descriptionLabel": "Short description (optional)",
+  "publishButton": "Publish Article",
+  "titleAndContentRequired": "Title and content are required",
+  "saveCta": "Save",
+  "removeCta": "Remove",
+  "shareCta": "Share",
+  "openInBrowser": "Open in Browser",
+  "changeLanguage": "Change Language",
+  "draftTitle": "Draft",
+  "addCoverImage": "Add Cover Image (Optional)",
+  "tapToChange": "Tap to change",
+  "articleTitleHint": "Article Title",
+  "writeStoryHint": "Write your story here...",
+  "charactersCount": "{count} characters",
+  "@charactersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

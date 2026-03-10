@@ -8,6 +8,7 @@ import '../../../domain/entities/article.dart';
 import '../../bloc/article/local/local_article_cubit.dart';
 import '../../bloc/article_detail/article_detail_cubit.dart';
 import '../../bloc/article_detail/article_detail_state.dart';
+import 'package:journalist_app/l10n/app_localizations.dart';
 
 class ArticleDetailsView extends StatelessWidget {
   final ArticleEntity? article;
@@ -17,7 +18,11 @@ class ArticleDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (article == null) {
-      return const Scaffold(body: Center(child: Text('Article not found.')));
+      return Scaffold(
+        body: Center(
+          child: Text(AppLocalizations.of(context)!.articleNotFound),
+        ),
+      );
     }
 
     return BlocProvider(
@@ -252,9 +257,9 @@ class ArticleDetailsView extends StatelessWidget {
           color: Colors.white,
           size: 20,
         ),
-        label: const Text(
-          'Save',
-          style: TextStyle(
+        label: Text(
+          AppLocalizations.of(context)!.saveCta,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -274,10 +279,10 @@ class ArticleDetailsView extends StatelessWidget {
     if (article != null) {
       BlocProvider.of<LocalArticleCubit>(context).saveArticle(article);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           backgroundColor: Colors.black87,
           behavior: SnackBarBehavior.floating,
-          content: Text('Article saved successfully!'),
+          content: Text(AppLocalizations.of(context)!.articleSavedSuccess),
         ),
       );
     }
