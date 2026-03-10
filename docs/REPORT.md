@@ -53,6 +53,19 @@ You can view a full demonstration of the app's features, including the animated 
       H --> I[Refresh DailyNews Feed]
       C --> I
   ```
+- **Firestore `articles` Collection Schema:**
+  ```mermaid
+  erDiagram
+      ARTICLES {
+          string author
+          string title
+          string description
+          string url
+          string urlToImage
+          string publishedAt
+          string content
+      }
+  ```
 
 **3. How Can You Improve This:**
 - **Dark Mode:** Adding a system-aware dark mode would make the reading experience much better at night.
