@@ -24,9 +24,9 @@ Overall, working on this app was a fantastic experience. It really helped me sol
 #### Video Prototype
 You can view a full demonstration of the app's features, including the animated splash screen, localization switching, and article publishing in the video below:
 
-[ ![Watch the Video](assets/video_thumbnail.png) ](assets/app_demo.webm)
+[ ![Watch the Video](assets/video_thumbnail.png) ](assets/app_demo.mp4)
 
-*(Note: Click the image above or open `docs/assets/app_demo.webm` directly to watch the demo)*
+*(Note: Click the image above or open `docs/assets/app_demo.mp4` directly to watch the demo)*
 
 ### 6. Overdelivery
 
