@@ -40,7 +40,7 @@ This project implements **Clean Architecture + BLoC/Cubit + Dependency Injection
 │  - Firebase Firestore (Remote Storage)      │
 │  - Firebase Storage (Images)                │
 │  - Floor (Local Persistence)                 │
-│  - Dio / Retrofit (API Integration)         │
+│  - Dio (API Integration)         │
 └─────────────────────────────────────────────┘
 ```
 
@@ -66,7 +66,7 @@ This project implements **Clean Architecture + BLoC/Cubit + Dependency Injection
 *   **ArticleRepositoryImpl**: Coordinates between multiple data sources.
 *   **Data Sources**:
     *   `FirebaseArticleService`: Interaction with Firestore and Storage.
-    *   `NewsApiService`: REST API integration via Retrofit.
+    *   `NewsApiService`: REST API integration via Dio.
     *   `AppDatabase`: Local storage using Floor.
 *   **Mappers**: Logic to convert backend DTOs/Models into business Entities.
 
@@ -76,7 +76,7 @@ This project implements **Clean Architecture + BLoC/Cubit + Dependency Injection
 
 #### 🚀 Framework & UI
 *   **Flutter**: Cross-platform development framework.
-*   **Jetpack Compose-style UI**: Clean, declarative UI with Material Design.
+*   **Declarative UI**: Clean, modern UI built with Flutter Widgets and Material Design.
 *   **Ionicons**: Modern iconography package.
 *   **Cached Network Image**: High-performance image caching system.
 
@@ -89,7 +89,7 @@ This project implements **Clean Architecture + BLoC/Cubit + Dependency Injection
 *   **Firebase Firestore**: Scalable NoSQL cloud database for real-time storage.
 *   **Firebase Storage**: Cloud storage for article images.
 *   **Floor**: High-level SQLite abstraction for local data persistence.
-*   **Retrofit / Dio**: Type-safe HTTP clients for REST API interaction.
+*   **Dio**: Robust HTTP client for REST API interaction.
 
 #### 🔧 Utility
 *   **Equatable**: Simplifies object comparison for efficient rebuilding.
@@ -108,7 +108,7 @@ This project implements **Clean Architecture + BLoC/Cubit + Dependency Injection
 1. Clone the repository.
 2. Ensure you have your `google-services.json` / `GoogleService-Info.plist` configured for Firebase.
 3. Run `flutter pub get`.
-4. Run `dart run build_runner build` to generate necessary code (Retrofit/Floor).
+4. Run `dart run build_runner build` to generate necessary code (Floor).
 5. Launch the app: `flutter run`.
 
 ---
