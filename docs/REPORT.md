@@ -40,8 +40,6 @@ You can view a full demonstration of the app's features, including the animated 
 - **Unit Testing:** Implemented core tests for domain usecases (`GetArticleUseCase`, `SaveArticleUseCase`) utilizing the `mocktail` package for mocking dependencies, solidifying app stability.
 
 **2. Prototypes Created:**
-- Early UI iterations for the Splash Screen animation to fine-tune the haptic feedback timing.
-- Used `l10n.yaml` to dynamically generate state-managed translation delegates instead of relying on outdated synthetic generation.
 - **Offline Draft & Auto-Sync Flow:**
   ```mermaid
   graph TD
