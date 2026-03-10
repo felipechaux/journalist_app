@@ -14,34 +14,61 @@ class ArticleDetailsView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (article == null) {
+      return const Scaffold(body: Center(child: Text('Article not found.')));
+    }
+
     return BlocProvider(
       create: (_) => sl<LocalArticleBloc>(),
       child: Scaffold(
-        appBar: _buildAppBar(),
+        backgroundColor: Colors.white,
+        appBar: _buildAppBar(context),
         body: _buildBody(),
-        floatingActionButton: _buildFloatingActionButton(),
+        floatingActionButton: _buildFloatingActionButton(context),
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      leading: Builder(
-        builder: (context) => GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _onBackButtonTapped(context),
-          child: const Icon(Ionicons.chevron_back, color: Colors.black),
+      leading: IconButton(
+        icon: const Icon(
+          Ionicons.chevron_back_outline,
+          color: Colors.black87,
+          size: 28,
         ),
+        onPressed: () => _onBackButtonTapped(context),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      actions: [
+        IconButton(
+          icon: const Icon(
+            Ionicons.share_social_outline,
+            color: Colors.black87,
+            size: 24,
+          ),
+          onPressed: () {},
+        ),
+        const SizedBox(width: 8),
+      ],
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Container(color: Colors.grey.shade100, height: 1),
       ),
     );
   }
 
   Widget _buildBody() {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildArticleTitleAndDate(),
-          _buildArticleImage(),
+          if (article!.urlToImage != null && article!.urlToImage!.isNotEmpty)
+            _buildArticleImage(),
           _buildArticleDescription(),
         ],
       ),
@@ -50,27 +77,60 @@ class ArticleDetailsView extends HookWidget {
 
   Widget _buildArticleTitleAndDate() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 22),
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Title
           Text(
-            article!.title!,
+            article!.title ?? 'Unknown Title',
             style: const TextStyle(
-              fontFamily: 'Butler',
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
+              fontSize: 28,
+              fontWeight: FontWeight.w800,
+              color: Colors.black87,
+              height: 1.3,
+              letterSpacing: -0.5,
             ),
           ),
-
-          const SizedBox(height: 14),
-          // DateTime
+          const SizedBox(height: 16),
+          // Category/Author & DateTime
           Row(
             children: [
-              const Icon(Ionicons.time_outline, size: 16),
-              const SizedBox(width: 4),
-              Text(article!.publishedAt!, style: const TextStyle(fontSize: 12)),
+              Icon(
+                Ionicons.time_outline,
+                size: 18,
+                color: Colors.grey.shade600,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                article!.publishedAt ?? 'Unknown Date',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(width: 16), // Spacing between time and author
+              if (article!.author != null && article!.author!.isNotEmpty) ...[
+                Icon(
+                  Ionicons.person_outline,
+                  size: 18,
+                  color: Colors.grey.shade600,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    article!.author!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ],
@@ -79,29 +139,62 @@ class ArticleDetailsView extends HookWidget {
   }
 
   Widget _buildArticleImage() {
-    return Container(
-      width: double.maxFinite,
-      height: 250,
-      margin: const EdgeInsets.only(top: 14),
-      child: Image.network(article!.urlToImage!, fit: BoxFit.cover),
-    );
-  }
-
-  Widget _buildArticleDescription() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
-      child: Text(
-        '${article!.description ?? ''}\n\n${article!.content ?? ''}',
-        style: const TextStyle(fontSize: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Image.network(
+        article!.urlToImage!,
+        width: double.infinity,
+        height: 250,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(
+          width: double.infinity,
+          height: 250,
+          color: Colors.grey.shade100,
+          child: const Center(
+            child: Icon(Ionicons.image_outline, size: 64, color: Colors.grey),
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildFloatingActionButton() {
-    return Builder(
-      builder: (context) => FloatingActionButton(
-        onPressed: () => _onFloatingActionButtonPressed(context),
-        child: const Icon(Ionicons.bookmark, color: Colors.white),
+  Widget _buildArticleDescription() {
+    final bodyContent =
+        '${article!.description ?? ''}\n\n${article!.content ?? ''}';
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 100), // Space for FAB
+      child: Text(
+        bodyContent.trim().isEmpty
+            ? 'No content available.'
+            : bodyContent.trim(),
+        style: const TextStyle(
+          fontSize: 18,
+          color: Colors.black87,
+          height: 1.6,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () => _onFloatingActionButtonPressed(context),
+      backgroundColor: Colors.black87,
+      elevation: 4,
+      icon: const Icon(
+        Ionicons.bookmark_outline,
+        color: Colors.white,
+        size: 20,
+      ),
+      label: const Text(
+        'Save',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
@@ -114,8 +207,9 @@ class ArticleDetailsView extends HookWidget {
     BlocProvider.of<LocalArticleBloc>(context).add(SaveArticle(article!));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        backgroundColor: Colors.black,
-        content: Text('Article saved successfully.'),
+        backgroundColor: Colors.black87,
+        behavior: SnackBarBehavior.floating,
+        content: Text('Article saved successfully!'),
       ),
     );
   }
