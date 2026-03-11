@@ -95,4 +95,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String charactersCount(int count) {
     return '$count caracteres';
   }
+
+  @override
+  String get generateAiSummary => 'Generar Resumen de IA';
+
+  @override
+  String get aiSummaryError =>
+      'No pudimos generar un resumen en este momento. Por favor, verifica tu conexión o inténtalo más tarde.';
+
+  @override
+  String get aiSummaryTitle => 'Resumen de IA';
 }

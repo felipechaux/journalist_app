@@ -259,6 +259,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} characters'**
   String charactersCount(int count);
+
+  /// No description provided for @generateAiSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate AI Summary'**
+  String get generateAiSummary;
+
+  /// No description provided for @aiSummaryError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t generate a summary right now. Please check your connection or try again later.'**
+  String get aiSummaryError;
+
+  /// No description provided for @aiSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Summary'**
+  String get aiSummaryTitle;
 }
 
 class _AppLocalizationsDelegate
