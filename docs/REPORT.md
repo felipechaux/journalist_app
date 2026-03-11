@@ -35,6 +35,11 @@ You can watch the draft publication, saving as draft, and auto-syncing feature w
 
 *(Note: Click the image above or open `docs/assets/draft_feature.webm` directly to watch the demo)*
 
+#### Firebase Database Structure
+Here is a view of our Firestore database syncing in real-time:
+
+![Firebase Articles Structure](assets/firebase_articles.png)
+
 ### 6. Overdelivery
 
 **1. New Features Implemented:**
@@ -73,7 +78,6 @@ You can watch the draft publication, saving as draft, and auto-syncing feature w
           string content
       }
   ```
-  ![Firebase Articles Structure](assets/firebase_articles.png)
 
 **3. How Can You Improve This:**
 - **Search Component:** Adding a search feature to find articles by typing in keywords.
