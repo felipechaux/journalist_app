@@ -12,6 +12,7 @@ import 'package:journalist_app/core/network_info/network_info.dart';
 
 import '../data_sources/remote/firebase_article_service.dart';
 import '../data_sources/remote/news_api_service.dart';
+import '../data_sources/remote/hugging_face_api_service.dart';
 
 class ArticleRepositoryImpl
     implements ArticleRepository, PublishArticleRepository {
@@ -19,12 +20,14 @@ class ArticleRepositoryImpl
   final AppDatabase _appDatabase;
   final FirebaseArticleService _firebaseArticleService;
   final NetworkInfo _networkInfo;
+  final HuggingFaceApiService _huggingFaceApiService;
 
   ArticleRepositoryImpl(
     this._newsApiService,
     this._appDatabase,
     this._firebaseArticleService,
     this._networkInfo,
+    this._huggingFaceApiService,
   );
 
   @override
@@ -172,6 +175,49 @@ class ArticleRepositoryImpl
         DioException(
           error: e.toString(),
           requestOptions: RequestOptions(path: ''),
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<DataState<String>> generateArticleSummary(String content) async {
+    try {
+      final response = await _huggingFaceApiService.generateSummary(
+        "Bearer $huggingFaceApiKey",
+        {"inputs": content},
+      );
+
+      if (response.statusCode == HttpStatus.ok) {
+        final List<dynamic> data = response.data;
+        if (data.isNotEmpty) {
+          final summary = data[0]['summary_text'] as String;
+          return DataSuccess(summary);
+        } else {
+          return DataFailed(
+            DioException(
+              error: "Parsed summary is empty",
+              requestOptions: response.requestOptions,
+            ),
+          );
+        }
+      } else {
+        return DataFailed(
+          DioException(
+            error: response.statusMessage,
+            response: response,
+            type: DioExceptionType.badResponse,
+            requestOptions: response.requestOptions,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    } catch (e) {
+      return DataFailed(
+        DioException(
+          error: e.toString(),
+          requestOptions: RequestOptions(path: huggingFaceUrl),
         ),
       );
     }

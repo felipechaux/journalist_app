@@ -6,7 +6,8 @@ import 'package:journalist_app/features/publish_article/domain/repository/publis
 import 'package:journalist_app/features/publish_article/domain/usecases/publish_article.dart';
 import 'package:journalist_app/features/publish_article/domain/params/publish_article_params.dart';
 
-class MockPublishArticleRepository extends Mock implements PublishArticleRepository {}
+class MockPublishArticleRepository extends Mock
+    implements PublishArticleRepository {}
 
 class FakeArticleEntity extends Fake implements ArticleEntity {}
 
@@ -35,50 +36,56 @@ void main() {
       article: tArticle,
     );
 
-    test('should publish the article to the repository successfully with image', () async {
-      // arrange
-      when(
-        () => mockPublishArticleRepository.publishArticle(
-          any(),
-          localImagePath: any(named: 'localImagePath'),
-        ),
-      ).thenAnswer((_) async => const DataSuccess(null));
+    test(
+      'should publish the article to the repository successfully with image',
+      () async {
+        // arrange
+        when(
+          () => mockPublishArticleRepository.publishArticle(
+            any(),
+            localImagePath: any(named: 'localImagePath'),
+          ),
+        ).thenAnswer((_) async => const DataSuccess(null));
 
-      // act
-      final result = await usecase(params: tPublishArticleParamsWithImage);
+        // act
+        final result = await usecase(params: tPublishArticleParamsWithImage);
 
-      // assert
-      expect(result, isA<DataSuccess<void>>());
-      verify(
-        () => mockPublishArticleRepository.publishArticle(
-          tArticle,
-          localImagePath: tLocalImagePath,
-        ),
-      ).called(1);
-      verifyNoMoreInteractions(mockPublishArticleRepository);
-    });
+        // assert
+        expect(result, isA<DataSuccess<void>>());
+        verify(
+          () => mockPublishArticleRepository.publishArticle(
+            tArticle,
+            localImagePath: tLocalImagePath,
+          ),
+        ).called(1);
+        verifyNoMoreInteractions(mockPublishArticleRepository);
+      },
+    );
 
-    test('should publish the article to the repository successfully without image', () async {
-      // arrange
-      when(
-        () => mockPublishArticleRepository.publishArticle(
-          any(),
-          localImagePath: any(named: 'localImagePath'),
-        ),
-      ).thenAnswer((_) async => const DataSuccess(null));
+    test(
+      'should publish the article to the repository successfully without image',
+      () async {
+        // arrange
+        when(
+          () => mockPublishArticleRepository.publishArticle(
+            any(),
+            localImagePath: any(named: 'localImagePath'),
+          ),
+        ).thenAnswer((_) async => const DataSuccess(null));
 
-      // act
-      final result = await usecase(params: tPublishArticleParamsWithoutImage);
+        // act
+        final result = await usecase(params: tPublishArticleParamsWithoutImage);
 
-      // assert
-      expect(result, isA<DataSuccess<void>>());
-      verify(
-        () => mockPublishArticleRepository.publishArticle(
-          tArticle,
-          localImagePath: null,
-        ),
-      ).called(1);
-      verifyNoMoreInteractions(mockPublishArticleRepository);
-    });
+        // assert
+        expect(result, isA<DataSuccess<void>>());
+        verify(
+          () => mockPublishArticleRepository.publishArticle(
+            tArticle,
+            localImagePath: null,
+          ),
+        ).called(1);
+        verifyNoMoreInteractions(mockPublishArticleRepository);
+      },
+    );
   });
 }

@@ -6,6 +6,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:journalist_app/core/network_info/network_info.dart';
 import 'package:journalist_app/core/network_info/bloc/network_cubit.dart';
 import 'package:journalist_app/features/daily_news/data/data_sources/remote/firebase_article_service.dart';
+import 'package:journalist_app/features/daily_news/data/data_sources/remote/hugging_face_api_service.dart';
 import 'package:journalist_app/features/daily_news/data/data_sources/remote/news_api_service.dart';
 import 'package:journalist_app/features/daily_news/data/repository/article_repository_impl.dart';
 import 'package:journalist_app/features/daily_news/domain/repository/article_repository.dart';
@@ -22,6 +23,8 @@ import 'package:journalist_app/features/publish_article/presentation/bloc/publis
 import 'package:journalist_app/features/daily_news/domain/repository/share_article_repository.dart';
 import 'package:journalist_app/features/daily_news/data/repository/share_article_repository_impl.dart';
 import 'package:journalist_app/features/daily_news/domain/usecases/share_article.dart';
+import 'package:journalist_app/features/daily_news/domain/usecases/generate_article_summary.dart';
+import 'package:journalist_app/features/daily_news/presentation/bloc/article/summary/article_summary_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -48,8 +51,10 @@ Future<void> initializeDependencies() async {
   // Dependencies
   sl.registerSingleton<NewsApiService>(NewsApiService(sl()));
 
+  sl.registerSingleton<HuggingFaceApiService>(HuggingFaceApiService(sl()));
+
   sl.registerSingleton<ArticleRepository>(
-    ArticleRepositoryImpl(sl(), sl(), sl(), sl()),
+    ArticleRepositoryImpl(sl(), sl(), sl(), sl(), sl()),
   );
 
   sl.registerSingleton<PublishArticleRepository>(
@@ -81,4 +86,10 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerFactory<NetworkCubit>(() => NetworkCubit(sl()));
+
+  sl.registerSingleton<GenerateArticleSummaryUseCase>(
+    GenerateArticleSummaryUseCase(sl()),
+  );
+
+  sl.registerFactory<ArticleSummaryCubit>(() => ArticleSummaryCubit(sl()));
 }

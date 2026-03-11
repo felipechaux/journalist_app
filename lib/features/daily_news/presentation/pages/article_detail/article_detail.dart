@@ -30,11 +30,10 @@ class ArticleDetailsView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => ArticleDetailCubit(article!, sl())..loadArticleDetails(),
+          create: (_) =>
+              ArticleDetailCubit(article!, sl())..loadArticleDetails(),
         ),
-        BlocProvider(
-          create: (_) => sl<ArticleSummaryCubit>(),
-        ),
+        BlocProvider(create: (_) => sl<ArticleSummaryCubit>()),
       ],
       child: Builder(
         builder: (context) => Scaffold(
@@ -238,7 +237,11 @@ class ArticleDetailsView extends StatelessWidget {
                 children: [
                   const Row(
                     children: [
-                      Icon(Ionicons.sparkles, size: 20, color: Colors.blueAccent),
+                      Icon(
+                        Ionicons.sparkles,
+                        size: 20,
+                        color: Colors.blueAccent,
+                      ),
                       SizedBox(width: 8),
                       Text(
                         "AI Summary",
@@ -278,7 +281,10 @@ class ArticleDetailsView extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Ionicons.alert_circle_outline, color: Colors.red.shade600),
+                      Icon(
+                        Ionicons.alert_circle_outline,
+                        color: Colors.red.shade600,
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
@@ -309,18 +315,26 @@ class ArticleDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildGenerateSummaryButton(BuildContext context, ArticleEntity article) {
+  Widget _buildGenerateSummaryButton(
+    BuildContext context,
+    ArticleEntity article,
+  ) {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
         onPressed: () {
-          final content = '${article.description ?? ''} ${article.content ?? ''}';
+          final content =
+              '${article.description ?? ''} ${article.content ?? ''}';
           context.read<ArticleSummaryCubit>().generateSummary(content);
         },
         icon: const Icon(Ionicons.sparkles_outline, color: Colors.black87),
         label: const Text(
           "Generate AI Summary",
-          style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),
