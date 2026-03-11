@@ -73,6 +73,7 @@ You can watch the draft publication, saving as draft, and auto-syncing feature w
           string content
       }
   ```
+  ![Firebase Articles Structure](assets/firebase_articles.png)
 
 **3. How Can You Improve This:**
 - **Search Component:** Adding a search feature to find articles by typing in keywords.
