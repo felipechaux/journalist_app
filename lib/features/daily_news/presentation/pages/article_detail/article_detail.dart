@@ -8,6 +8,8 @@ import '../../../domain/entities/article.dart';
 import '../../bloc/article/local/local_article_cubit.dart';
 import '../../bloc/article_detail/article_detail_cubit.dart';
 import '../../bloc/article_detail/article_detail_state.dart';
+import '../../bloc/article/summary/article_summary_cubit.dart';
+import '../../bloc/article/summary/article_summary_state.dart';
 import 'package:journalist_app/l10n/app_localizations.dart';
 
 class ArticleDetailsView extends StatelessWidget {
@@ -25,8 +27,15 @@ class ArticleDetailsView extends StatelessWidget {
       );
     }
 
-    return BlocProvider(
-      create: (_) => ArticleDetailCubit(article!, sl())..loadArticleDetails(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => ArticleDetailCubit(article!, sl())..loadArticleDetails(),
+        ),
+        BlocProvider(
+          create: (_) => sl<ArticleSummaryCubit>(),
+        ),
+      ],
       child: Builder(
         builder: (context) => Scaffold(
           backgroundColor: Colors.white,
@@ -103,6 +112,7 @@ class ArticleDetailsView extends StatelessWidget {
           _buildArticleTitleAndDate(article),
           if (article.urlToImage != null && article.urlToImage!.isNotEmpty)
             _buildArticleImage(article),
+          _buildSummarySection(article),
           _buildArticleDescription(article),
         ],
       ),
@@ -197,6 +207,126 @@ class ArticleDetailsView extends StatelessWidget {
           color: Colors.grey.shade100,
           child: const Center(
             child: Icon(Ionicons.image_outline, size: 64, color: Colors.grey),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSummarySection(ArticleEntity article) {
+    return BlocBuilder<ArticleSummaryCubit, ArticleSummaryState>(
+      builder: (context, state) {
+        if (state is ArticleSummaryLoading) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Center(
+              child: CircularProgressIndicator(color: Colors.black87),
+            ),
+          );
+        } else if (state is ArticleSummarySuccess) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Ionicons.sparkles, size: 20, color: Colors.blueAccent),
+                      SizedBox(width: 8),
+                      Text(
+                        "AI Summary",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    state.summary,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        } else if (state is ArticleSummaryFailed) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.red.shade200),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Ionicons.alert_circle_outline, color: Colors.red.shade600),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          "We couldn't generate a summary right now. Please check your connection or try again later.",
+                          style: TextStyle(
+                            color: Colors.red.shade800,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildGenerateSummaryButton(context, article),
+              ],
+            ),
+          );
+        }
+
+        // Initial State
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: _buildGenerateSummaryButton(context, article),
+        );
+      },
+    );
+  }
+
+  Widget _buildGenerateSummaryButton(BuildContext context, ArticleEntity article) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () {
+          final content = '${article.description ?? ''} ${article.content ?? ''}';
+          context.read<ArticleSummaryCubit>().generateSummary(content);
+        },
+        icon: const Icon(Ionicons.sparkles_outline, color: Colors.black87),
+        label: const Text(
+          "Generate AI Summary",
+          style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          side: BorderSide(color: Colors.grey.shade400),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),
