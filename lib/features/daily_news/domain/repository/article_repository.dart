@@ -18,4 +18,6 @@ abstract class ArticleRepository {
     ArticleEntity article, {
     String? localImagePath,
   });
+
+  Future<DataState<String>> generateArticleSummary(String content);
 }

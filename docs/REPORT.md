@@ -35,6 +35,13 @@ You can watch the draft publication, saving as draft, and auto-syncing feature w
 
 *(Note: Click the image above or open `docs/assets/draft_feature.webm` directly to watch the demo)*
 
+#### AI Article Summary Video
+You can watch the integrated AI model generating a high-quality summary via the Hugging Face Inference API:
+
+[<img src="assets/article_detail.png" alt="Watch the AI Summary Feature Video" width="300"/>](assets/huggingface_summary.webm)
+
+*(Note: Click the image above or open `docs/assets/huggingface_summary.webm` directly to watch the demo)*
+
 #### Firebase Database Structure
 Here is a view of our Firestore database syncing in real-time:
 
@@ -49,6 +56,7 @@ Here is a view of our Firestore database syncing in real-time:
 - **Offline Article Drafting and Auto-Sync:** Implemented a system that detects when the device is offline during article publishing, saves the article securely as a local draft (complete with cached images and a Draft UI badge), and automatically synchronizes and pushes it to Firebase as soon as the internet connection is restored.
 - **Markdown Formatting:** Added a rich text renderer using Markdown so that the articles are beautifully formatted with bold text, lists, and proper headers.
 - **Premium Aesthetics:** Added a visually appealing splash screen with a dynamic shine animation and integrated haptic feedback native to the OS. Also created custom transparent app launcher icons for both Android and iOS.
+- **AI Article Summarization:** Integrated the Hugging Face API (using the Facebook BART model) to generate on-demand, accurate summaries of articles natively within the app. Proper clean architecture (including dedicated retrofitted services and Cubits) was used for real-time text generation.
 - **Unit Testing:** Implemented core tests for domain usecases (`GetArticleUseCase`, `SaveArticleUseCase`, `PublishArticleUseCase`) utilizing the `mocktail` package for mocking dependencies, solidifying app stability.
 
 **2. Prototypes Created:**
@@ -84,6 +92,7 @@ Here is a view of our Firestore database syncing in real-time:
 - **Dark Mode:** Adding a system-aware dark mode would make the reading experience much better at night.
 - **Cloud Syncing Settings:** We could sync user preferences (like their chosen language and saved articles) to their Firebase account so they can log in on multiple devices.
 - **Push Notifications:** Alerting users to breaking news or successful article publications using Firebase Cloud Messaging.
+- **API Key Security:** For demonstration purposes, the free Hugging Face API key is currently stored locally in the codebase. Moving forward, production apps should rely on secure backend proxying (like Cloud Functions) or utilize environments with ignored `.env` files to securely obfuscate API secrets.
 
 ### 7. Extra Sections
 Thank you for reading my report! Building this app was a great journey.
