@@ -235,17 +235,17 @@ class ArticleDetailsView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Ionicons.sparkles,
                         size: 20,
                         color: Colors.blueAccent,
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
-                        "AI Summary",
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.aiSummaryTitle,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                           color: Colors.black87,
@@ -288,7 +288,7 @@ class ArticleDetailsView extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          "We couldn't generate a summary right now. Please check your connection or try again later.",
+                          AppLocalizations.of(context)!.aiSummaryError,
                           style: TextStyle(
                             color: Colors.red.shade800,
                             fontSize: 15,
@@ -328,9 +328,9 @@ class ArticleDetailsView extends StatelessWidget {
           context.read<ArticleSummaryCubit>().generateSummary(content);
         },
         icon: const Icon(Ionicons.sparkles_outline, color: Colors.black87),
-        label: const Text(
-          "Generate AI Summary",
-          style: TextStyle(
+        label: Text(
+          AppLocalizations.of(context)!.generateAiSummary,
+          style: const TextStyle(
             color: Colors.black87,
             fontSize: 16,
             fontWeight: FontWeight.bold,

@@ -39,5 +39,8 @@
         "type": "int"
       }
     }
-  }
+  },
+  "generateAiSummary": "Generate AI Summary",
+  "aiSummaryError": "We couldn't generate a summary right now. Please check your connection or try again later.",
+  "aiSummaryTitle": "AI Summary"
 }

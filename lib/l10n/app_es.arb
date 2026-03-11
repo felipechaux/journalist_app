@@ -25,5 +25,8 @@
   "tapToChange": "Toca para cambiar",
   "articleTitleHint": "Título del Artículo",
   "writeStoryHint": "Escribe tu historia aquí...",
-  "charactersCount": "{count} caracteres"
+  "charactersCount": "{count} caracteres",
+  "generateAiSummary": "Generar Resumen de IA",
+  "aiSummaryError": "No pudimos generar un resumen en este momento. Por favor, verifica tu conexión o inténtalo más tarde.",
+  "aiSummaryTitle": "Resumen de IA"
 }
