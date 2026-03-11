@@ -38,7 +38,7 @@ You can watch the draft publication, saving as draft, and auto-syncing feature w
 #### AI Article Summary Video
 You can watch the integrated AI model generating a high-quality summary via the Hugging Face Inference API:
 
-[<img src="assets/article_detail.png" alt="Watch the AI Summary Feature Video" width="300"/>](assets/huggingface_summary.webm)
+[<img src="assets/huggingface_thumbnail.png" alt="Watch the AI Summary Feature Video" width="300"/>](assets/huggingface_summary.webm)
 
 *(Note: Click the image above or open `docs/assets/huggingface_summary.webm` directly to watch the demo)*
 
