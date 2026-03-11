@@ -92,7 +92,7 @@ Here is a view of our Firestore database syncing in real-time:
 - **Dark Mode:** Adding a system-aware dark mode would make the reading experience much better at night.
 - **Cloud Syncing Settings:** We could sync user preferences (like their chosen language and saved articles) to their Firebase account so they can log in on multiple devices.
 - **Push Notifications:** Alerting users to breaking news or successful article publications using Firebase Cloud Messaging.
-- **API Key Security:** For demonstration purposes, the free Hugging Face API key is currently stored locally in the codebase. Moving forward, production apps should rely on secure backend proxying (like Cloud Functions) or utilize environments with ignored `.env` files to securely obfuscate API secrets.
+
 
 ### 7. Extra Sections
 Thank you for reading my report! Building this app was a great journey.
